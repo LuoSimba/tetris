@@ -1,11 +1,10 @@
 package game.ui;
 
+
 import java.awt.Cursor;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.awt.image.MemoryImageSource;
 
 import javax.swing.JFrame;
@@ -23,7 +22,7 @@ public class Window extends JFrame {
 		this.setTitle("Tetris");
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.setResizable(false);
-		this.setBounds(500, 50, 100, 100);
+		this.setBounds(500, 50, 200, 200);
 		this.enableInputMethods(false);
 	
 		// 创建一个透明的鼠标光标

@@ -1,26 +1,24 @@
 package game.ui;
 
 import game.config.TetrisConstants;
+import game.model.Page;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
+import java.awt.Graphics2D;
 
 /**
  * 背景图
  * 
  * 创建后就不会改变
  */
-public class BackgroundImage extends BufferedImage {
+public class BackgroundImage extends Page {
 
 	public BackgroundImage()
 	{
 		super(
 				TetrisConstants.TILE_SIZE * TetrisConstants.SPACE_WIDTH, 
-				TetrisConstants.TILE_SIZE * TetrisConstants.SPACE_HEIGHT_EX, 
-				BufferedImage.TYPE_INT_ARGB);
+				TetrisConstants.TILE_SIZE * TetrisConstants.SPACE_HEIGHT_EX);
 		
-		Graphics g = this.getGraphics();
+		Graphics2D g = this.getContext();
 		
 		int height = TetrisConstants.SPACE_HEIGHT_EX;
 		int edenSize = height - TetrisConstants.SPACE_HEIGHT;
@@ -31,5 +29,7 @@ public class BackgroundImage extends BufferedImage {
 		
 		g.setColor(TetrisConstants.COLOR_EDEN);
 		g.fillRect(0, 0, this.getWidth(), edenSize * unit);
+		
+		g.dispose();
 	}
 }
