@@ -298,9 +298,8 @@ public abstract class Shape {
 	 * 外部已经设置好了方块的颜色，这里只需要在
 	 * 合适的位置绘图。
 	 */
-	public void paint(Graphics2D g)
+	public void paint(Graphics2D g, final int unit)
 	{
-		int unit = TetrisConstants.TILE_SIZE;
 		int size = getMapSize();
 		int ci = size -1;
 		

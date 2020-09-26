@@ -5,6 +5,10 @@ import java.awt.Color;
 public interface TetrisConstants {
 	
 	int TILE_SIZE = 25;
+	/**
+	 * 下一个方块预览图的瓦片大小
+	 */
+	int TILE_SIZE_SMALL = 15;
 	
 	int SPACE_WIDTH = 10;
 	int SPACE_HEIGHT = 20;

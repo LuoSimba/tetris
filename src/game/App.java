@@ -2,6 +2,7 @@ package game;
 
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -29,8 +30,10 @@ public class App {
 	private Space       space;
 	private EventQueue  queue;
 	private Shape       shape;
+	private Shape       nextShape;
 	private Page        shapePic;
 	private Page        shapePicImg;
+	private Page        nextShapePic;
 	private Tick        tick;
 	private ColorScheme cs;
 	private boolean     isPaused;
@@ -60,6 +63,7 @@ public class App {
 	private App()
 	{
 		int unit = TetrisConstants.TILE_SIZE;
+		int unit_s = TetrisConstants.TILE_SIZE_SMALL;
 		int size = TetrisConstants.MAX_SHAPE_SIZE;
 		
 		cs          = new ColorScheme();
@@ -72,7 +76,8 @@ public class App {
 		
 		shapePic    = new Page(size * unit, size * unit);
 		shapePicImg = new Page(size * unit, size * unit);
-		genNextShape();
+		nextShapePic = new Page(size * unit_s, size * unit_s);
+		genShape();
 		
 		win.add(panel);
 		win.add(sidePanel, BorderLayout.EAST);
@@ -114,7 +119,7 @@ public class App {
 				refreshUI();
 				break;
 			case NEXT_SHAPE:
-				genNextShape();
+				genShape();
 				break;
 			case PAUSE:
 				pause();
@@ -169,25 +174,43 @@ public class App {
 	}
 	
 	/**
-	 * 产生下一个方块
+	 * 按照一定的顺序产生方块
 	 */
-	private void genNextShape()
+	private Shape createShape()
 	{
 		char type = shapeQueue.charAt(shapeIndex);
-		
-		shape = Shape.create(type);
-		
-		// 产生新方块的时候，才更新配色
-		cs.next();
-		
-		updateShapePic();
 		
 		shapeIndex ++;
 		if (shapeIndex >= shapeQueue.length())
 			shapeIndex = 0;
 		
-		shapeImageFall();
+		return Shape.create(type);
+	}
+	
+	/**
+	 * 产生下一个方块
+	 */
+	private void genShape()
+	{
+		// 当前方块
+		if (nextShape == null)
+		{
+			shape = createShape();
+		}
+		else
+		{
+			shape = nextShape;
+		}
+		// 产生新方块的时候，才更新配色
+		cs.next();
 		
+		// 产生下一个方块，下一个方块总是新生成的
+		nextShape = createShape();
+
+		// 两个方块产生完毕后，再绘制方块图形
+		updateShapePic();
+		
+		shapeImageFall();
 		refreshUI();
 	}
 	
@@ -249,7 +272,7 @@ public class App {
 			// 结束游戏判断
 			//space.checkGameOver();
 			// 生成下一个方块
-			genNextShape();
+			genShape();
 		}
 		
 		refreshUI();
@@ -306,20 +329,33 @@ public class App {
 		return shapePicImg;
 	}
 	
+	public Page getNextShapePic()
+	{
+		return nextShapePic;
+	}
+	
 	private void updateShapePic()
 	{
 		Graphics2D g;
+		int unit = TetrisConstants.TILE_SIZE;
+		int unit_s = TetrisConstants.TILE_SIZE_SMALL;
 		
 		shapePic.clear();
 		g = shapePic.getContext();
 		g.setColor(cs.getColor());
-		shape.paint(g);
+		shape.paint(g, unit);
 		g.dispose();
 		
 		shapePicImg.clear();
 		g = shapePicImg.getContext();
 		g.setColor(cs.getImgColor());
-		shape.paint(g);
+		shape.paint(g, unit);
+		g.dispose();
+		
+		nextShapePic.clear();
+		g = nextShapePic.getContext();
+		g.setColor(Color.RED);
+		nextShape.paint(g, unit_s);
 		g.dispose();
 	}
 }
