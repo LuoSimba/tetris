@@ -23,7 +23,7 @@ public class ShapeL extends Shape {
 	};
 	
 	@Override
-	protected int getMapSize() {
+	public int getMapSize() {
 		return 3;
 	}
 	

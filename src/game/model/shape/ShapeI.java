@@ -18,7 +18,7 @@ public class ShapeI extends Shape {
 	};
 	
 	@Override
-	protected int getMapSize() {
+	public int getMapSize() {
 		return 4;
 	}
 	

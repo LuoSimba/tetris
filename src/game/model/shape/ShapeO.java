@@ -16,7 +16,7 @@ public class ShapeO extends Shape {
 	};
 	
 	@Override
-	protected int getMapSize() {
+	public int getMapSize() {
 		return 4;
 	}
 	
