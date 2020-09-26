@@ -37,4 +37,9 @@ public class ShapeF extends Shape {
 	{
 		return maps[ shapeIndex ];
 	}
+
+	@Override
+	public char getType() {
+		return 'F';
+	}
 }

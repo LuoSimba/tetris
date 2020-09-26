@@ -6,6 +6,8 @@ import java.util.List;
 
 /**
  * 管理方块的配色
+ * 
+ * 应当只在 ShapeFactory 创建方块时使用。
  */
 public class ColorScheme {
 
@@ -20,7 +22,7 @@ public class ColorScheme {
 		list  = new ArrayList<Color>();
 		list2 = new ArrayList<Color>();
 	
-		index = -1;
+		index = 0;
 		size = 6;
 		
 		for (int i = 0; i < size; i ++)

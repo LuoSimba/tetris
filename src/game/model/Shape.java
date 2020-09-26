@@ -1,5 +1,6 @@
 package game.model;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Arrays;
 
@@ -29,58 +30,13 @@ import game.model.shape.ShapeZ;
  */
 public abstract class Shape {
 	
-	public static Shape create(char type) {
-		return create(type, 0, 3, 20);
-	}
-	
-	private static Shape create(char type, int index, int x, int y)
-	{
-		Shape shape = null;
-		
-		switch (type)
-		{
-		case 'L':
-			shape = new ShapeL();
-			break;
-		case 'T':
-			shape = new ShapeT();
-			break;
-		case 'Z':
-			shape = new ShapeZ();
-			break;
-		case 'I':
-			shape = new ShapeI();
-			break;
-		case 'O':
-			shape = new ShapeO();
-			break;
-		case 'F':
-			shape = new ShapeF();
-			break;
-		case 'S':
-			shape = new ShapeS();
-			break;
-		default:
-			shape = new ShapeT();
-		}
-		
-		shape.type = type;
-		shape.shapeIndex = index;
-		shape.x = x;
-		shape.y = y;
-		shape.y2 = y;
-		shape.parse();
-		shape.autoFit();
-		
-		return shape;
-	}
-	
-	private char type;
 	private int x;
 	private int y;
 	private int y2;
 	private int[] data;
 	protected int shapeIndex;
+	private Color fg;
+	private Color bg;
 	
 	protected Shape()
 	{
@@ -94,8 +50,33 @@ public abstract class Shape {
 		parse();
 	}
 
+	protected void setPos(int x, int y)
+	{
+		this.x = x;
+		this.y = y;
+		this.y2 = y;
+		
+		parse();
+		autoFit();
+	}
 	
+	protected void setColor(Color fg, Color bg)
+	{
+		this.fg = fg;
+		this.bg = bg;
+	}
 	
+	protected Color getColor()
+	{
+		return fg;
+	}
+	
+	protected Color getImgColor()
+	{
+		return bg;
+	}
+	
+	public abstract char getType();
 	public abstract int getMapSize();
 	protected abstract int getMapCount();
 	protected abstract String getShapeData(int index);
@@ -112,7 +93,7 @@ public abstract class Shape {
 		return map.charAt(index) == '1';
 	}
 	
-	private int rotatePoints(boolean bClockwise)
+	protected int rotatePoints(boolean bClockwise)
 	{
 		int index = shapeIndex;
 		
@@ -174,22 +155,6 @@ public abstract class Shape {
 		
 		while (isReachRight())
 			left();
-	}
-	
-	/**
-	 * 方块的旋转
-	 * 
-	 * 实际上是提供一个新的方块。
-	 * 
-	 * 因为旋转不一定会成功，这样方便回滚
-	 */
-	public Shape rotate(boolean bClockwise)
-	{
-		char type = this.type;
-		int index = rotatePoints(bClockwise);
-		return create(type, index, x, y);
-		
-		//autoFit();
 	}
 	
 	public final int getX()
@@ -292,17 +257,30 @@ public abstract class Shape {
 		return data;
 	}
 	
+	public void paintBody(Graphics2D g)
+	{
+		paint(g, TetrisConstants.TILE_SIZE, fg);
+	}
+	
+	public void paintImage(Graphics2D g)
+	{
+		paint(g, TetrisConstants.TILE_SIZE, bg);
+	}
+	
+	public void paintPre(Graphics2D g)
+	{
+		paint(g, TetrisConstants.TILE_SIZE_SMALL, fg);
+	}
+	
 	/**
-	 * 绘制方块
-	 * 
-	 * 外部已经设置好了方块的颜色，这里只需要在
-	 * 合适的位置绘图。
+	 * 绘制方块各种图片：本体，阴影，预览图
 	 */
-	public void paint(Graphics2D g, final int unit)
+	private void paint(Graphics2D g, final int unit, Color c)
 	{
 		int size = getMapSize();
 		int ci = size -1;
 		
+		g.setColor(c);
 		for (int y = 0; y < size; y ++)
 		{
 			for (int x = 0; x < size; x ++)

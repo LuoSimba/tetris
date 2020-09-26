@@ -30,4 +30,9 @@ public class ShapeS extends Shape {
 	{
 		return maps[ shapeIndex ];
 	}
+
+	@Override
+	public char getType() {
+		return 'S';
+	}
 }

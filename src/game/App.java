@@ -15,6 +15,7 @@ import game.model.Command;
 import game.model.EventQueue;
 import game.model.Page;
 import game.model.Shape;
+import game.model.ShapeFactory;
 import game.model.Space;
 import game.ui.GamePanel;
 import game.ui.SidePanel;
@@ -29,18 +30,14 @@ public class App {
 	private SidePanel   sidePanel;
 	private Space       space;
 	private EventQueue  queue;
+	private ShapeFactory factory;
 	private Shape       shape;
 	private Shape       nextShape;
 	private Page        shapePic;
 	private Page        shapePicImg;
 	private Page        nextShapePic;
 	private Tick        tick;
-	private ColorScheme cs;
 	private boolean     isPaused;
-
-	
-	private String shapeQueue = "ITOFLSZ";
-	private int shapeIndex = 0;
 
 	
 	//Integer.toBinaryString(-1);
@@ -66,13 +63,13 @@ public class App {
 		int unit_s = TetrisConstants.TILE_SIZE_SMALL;
 		int size = TetrisConstants.MAX_SHAPE_SIZE;
 		
-		cs          = new ColorScheme();
 		win         = new Window();
 		panel       = new GamePanel();
 		sidePanel   = new SidePanel();
 		queue       = new EventQueue();
 		space       = new Space();
 		tick        = new Tick();
+		factory     = new ShapeFactory();
 		
 		shapePic    = new Page(size * unit, size * unit);
 		shapePicImg = new Page(size * unit, size * unit);
@@ -174,20 +171,6 @@ public class App {
 	}
 	
 	/**
-	 * 按照一定的顺序产生方块
-	 */
-	private Shape createShape()
-	{
-		char type = shapeQueue.charAt(shapeIndex);
-		
-		shapeIndex ++;
-		if (shapeIndex >= shapeQueue.length())
-			shapeIndex = 0;
-		
-		return Shape.create(type);
-	}
-	
-	/**
 	 * 产生下一个方块
 	 */
 	private void genShape()
@@ -195,17 +178,15 @@ public class App {
 		// 当前方块
 		if (nextShape == null)
 		{
-			shape = createShape();
+			shape = factory.genNext();
 		}
 		else
 		{
 			shape = nextShape;
 		}
-		// 产生新方块的时候，才更新配色
-		cs.next();
 		
 		// 产生下一个方块，下一个方块总是新生成的
-		nextShape = createShape();
+		nextShape = factory.genNext();
 
 		// 两个方块产生完毕后，再绘制方块图形
 		updateShapePic();
@@ -281,7 +262,7 @@ public class App {
 	
 	private void rotateShape()
 	{
-		Shape nextShape = shape.rotate(true);
+		Shape nextShape = factory.rotate(shape);
 		
 		if (space.isConflict(nextShape))
 		{
@@ -337,25 +318,20 @@ public class App {
 	private void updateShapePic()
 	{
 		Graphics2D g;
-		int unit = TetrisConstants.TILE_SIZE;
-		int unit_s = TetrisConstants.TILE_SIZE_SMALL;
 		
 		shapePic.clear();
 		g = shapePic.getContext();
-		g.setColor(cs.getColor());
-		shape.paint(g, unit);
+		shape.paintBody(g);
 		g.dispose();
 		
 		shapePicImg.clear();
 		g = shapePicImg.getContext();
-		g.setColor(cs.getImgColor());
-		shape.paint(g, unit);
+		shape.paintImage(g);
 		g.dispose();
 		
 		nextShapePic.clear();
 		g = nextShapePic.getContext();
-		g.setColor(Color.RED);
-		nextShape.paint(g, unit_s);
+		nextShape.paintPre(g);
 		g.dispose();
 	}
 }
