@@ -1,10 +1,7 @@
 package game;
 
 
-import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -12,6 +9,7 @@ import game.config.TetrisConstants;
 import game.input.Keypad;
 import game.input.MouseMotion;
 import game.input.Tick;
+import game.model.ColorScheme;
 import game.model.Command;
 import game.model.EventQueue;
 import game.model.Page;
@@ -34,6 +32,7 @@ public class App {
 	private Page        shapePic;
 	private Page        shapePicImg;
 	private Tick        tick;
+	private ColorScheme cs;
 	private boolean     isPaused;
 
 	
@@ -63,6 +62,7 @@ public class App {
 		int unit = TetrisConstants.TILE_SIZE;
 		int size = TetrisConstants.MAX_SHAPE_SIZE;
 		
+		cs          = new ColorScheme();
 		win         = new Window();
 		panel       = new GamePanel();
 		sidePanel   = new SidePanel();
@@ -176,6 +176,10 @@ public class App {
 		char type = shapeQueue.charAt(shapeIndex);
 		
 		shape = Shape.create(type);
+		
+		// 产生新方块的时候，才更新配色
+		cs.next();
+		
 		updateShapePic();
 		
 		shapeIndex ++;
@@ -239,7 +243,7 @@ public class App {
 			// 回退
 			shape.up();
 			// 合并
-			space.mergeFrom(shape);
+			space.mergeShape(shape, shapePic);
 			// 清除
 			space.clearFullRows();
 			// 结束游戏判断
@@ -308,13 +312,13 @@ public class App {
 		
 		shapePic.clear();
 		g = shapePic.getContext();
-		g.setColor(TetrisConstants.COLOR_TILE);
+		g.setColor(cs.getColor());
 		shape.paint(g);
 		g.dispose();
 		
 		shapePicImg.clear();
 		g = shapePicImg.getContext();
-		g.setColor(TetrisConstants.COLOR_IMAGE);
+		g.setColor(cs.getImgColor());
 		shape.paint(g);
 		g.dispose();
 	}

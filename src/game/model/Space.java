@@ -2,7 +2,7 @@ package game.model;
 
 import game.config.TetrisConstants;
 
-import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
@@ -19,7 +19,7 @@ import java.util.Arrays;
 public class Space {
 	
 	private int[] dataA;
-	private BufferedImage image;
+	private Page image;
 	
 	public Space()
 	{
@@ -29,11 +29,8 @@ public class Space {
 		
 		dataA = new int[ height ];
 		Arrays.fill(dataA, TetrisConstants.INIT_SPACE_ROW);
-		
-		image = new BufferedImage(
-				width*unit, 
-				height*unit, 
-				BufferedImage.TYPE_INT_ARGB);
+	
+		image = new Page(width * unit, height * unit);
 		
 		redraw();
 	}
@@ -46,17 +43,11 @@ public class Space {
 		int unit   = TetrisConstants.TILE_SIZE;
 		int ci     = height -1;
 		
-		Graphics2D g2 = (Graphics2D) image.getGraphics();
-		
-		// clear
-		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
-		g2.fillRect(0, 0, image.getWidth(), image.getHeight());
-		
-		// reset composite
-		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+		image.clear();
+		Graphics2D g2 = image.getContext();
 		
 		// draw
-		g2.setColor(TetrisConstants.COLOR_TILE);
+		g2.setColor(Color.RED);
 		
 		for (int y = 0; y < height; y ++)
 		{
@@ -76,6 +67,8 @@ public class Space {
 				}
 			}
 		}
+		
+		g2.dispose();
 	}
 	
 	public BufferedImage getImage()
@@ -125,14 +118,21 @@ public class Space {
 		return false;
 	}
 	
-	public void mergeFrom(Shape shape)
+	/**
+	 * 方块合并，因为方块的图片已经有现成的，所以
+	 * 直接传入而不重新生成
+	 */
+	public void mergeShape(Shape shape, Page shapePic)
 	{
+		int unit = TetrisConstants.TILE_SIZE;
 		int[] raster = shape.getData();
-		int rasterIndex = shape.getY();
+		int offset = shape.getY();
+		int offset2 = offset + shape.getMapSize() -1;
+		int ci = TetrisConstants.SPACE_HEIGHT_EX -1;
 		
 		for (int y = 0; y < raster.length; y ++)
 		{
-			int dst_pos = rasterIndex + y;
+			int dst_pos = offset + y;
 			
 			if (dst_pos < 0)
 				; // TODO
@@ -142,7 +142,12 @@ public class Space {
 				; // TODO
 		}
 		
-		redraw();
+		// 绘制图片
+		Graphics2D g = image.getContext();
+		g.drawImage(shapePic, 
+				shape.getX() * unit, 
+				(ci - offset2) * unit, 
+				null);
 	}
 	
 	public void checkGameOver()
@@ -165,34 +170,51 @@ public class Space {
 	 */
 	public void clearFullRows()
 	{
+		//boolean isDel = false;
+		
 		for (int i = 0; i < dataA.length; i ++)
 		{
 			while (isRowFull(dataA[i]))
 			{
+				//isDel = true;
 				deleteRow(i);
 			}
 		}
-		
-		redraw();
 	}
 	
 	/**
 	 * 消去某一行
 	 * 
+	 * （同时处理界面）
+	 * 
 	 * 则更高的行会落下
 	 */
-	private void deleteRow(int index)
+	private void deleteRow(final int index)
 	{
 		int topIndex = dataA.length - 1;
 		
-		while (index < topIndex)
+		for (int i = index; i < topIndex; i ++)
 		{
-			dataA[ index ] = dataA[ index + 1];
-			index ++;
+			dataA[ i ] = dataA[ i + 1];
 		}
 		
 		// 新补充的一行必须也是初始数据，而不是 0x00000000
 		dataA[topIndex] = TetrisConstants.INIT_SPACE_ROW;
+		
+		// ui
+		int unit = TetrisConstants.TILE_SIZE;
+		int ci = TetrisConstants.SPACE_HEIGHT_EX - 1;
+		int width = TetrisConstants.SPACE_WIDTH;
+
+		Graphics2D g = image.getContext();
+		g.setComposite(Page.COMP_SRC);
+		g.copyArea(
+				0, 0, 
+				width * unit, (ci - index) * unit,
+				0, unit);
+		g.setComposite(Page.COMP_CLR);
+		g.fillRect(0, 0, width * unit, unit);
+		g.dispose();
 	}
 	
 	private boolean isRowFull(int row)

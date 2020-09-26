@@ -5,6 +5,10 @@ java gui project
 
 ![snapshot](etc/snapshot.png)
 
+## ChangeLog
+
+* 0926 增加彩色方块
+
 ## TODO
 
 * 没有逆时针旋转

@@ -10,7 +10,8 @@ import java.awt.image.BufferedImage;
  */
 public class Page extends BufferedImage {
 
-	private static final Composite comp = AlphaComposite.getInstance(AlphaComposite.CLEAR);
+	public static final Composite COMP_CLR = AlphaComposite.getInstance(AlphaComposite.CLEAR);
+	public static final Composite COMP_SRC = AlphaComposite.getInstance(AlphaComposite.SRC);
 	
 	public Page(int width, int height)
 	{
@@ -28,7 +29,7 @@ public class Page extends BufferedImage {
 	public void clear()
 	{
 		Graphics2D g = this.getContext();
-		g.setComposite(comp);
+		g.setComposite(COMP_CLR);
 		g.fillRect(0, 0, this.getWidth(), this.getHeight());
 		g.dispose();
 	}
