@@ -304,26 +304,16 @@ public class App {
 	
 	private void updateShapePic()
 	{
-		Composite comp = AlphaComposite.getInstance(AlphaComposite.CLEAR);
-		Composite compBackup;
 		Graphics2D g;
 		
+		shapePic.clear();
 		g = shapePic.getContext();
-		compBackup = g.getComposite();
-		g.setComposite(comp);
-		g.fillRect(0, 0, shapePic.getWidth(), shapePic.getHeight());
-		
-		g.setComposite(compBackup);
 		g.setColor(TetrisConstants.COLOR_TILE);
 		shape.paint(g);
 		g.dispose();
 		
+		shapePicImg.clear();
 		g = shapePicImg.getContext();
-		compBackup = g.getComposite();
-		g.setComposite(comp);
-		g.fillRect(0, 0, shapePicImg.getWidth(), shapePicImg.getHeight());
-		
-		g.setComposite(compBackup);
 		g.setColor(TetrisConstants.COLOR_IMAGE);
 		shape.paint(g);
 		g.dispose();
