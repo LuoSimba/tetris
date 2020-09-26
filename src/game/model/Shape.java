@@ -1,5 +1,7 @@
 package game.model;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.util.Arrays;
 
 import game.config.TetrisConstants;
@@ -84,12 +86,13 @@ public abstract class Shape {
 		y = 20;
 		y2 = 20;
 		shapeIndex = 0;
-		
 		data = new int[ mapSize ];
 		parse();
 	}
+
 	
-	protected abstract int getMapSize();
+	
+	public abstract int getMapSize();
 	protected abstract int getMapCount();
 	protected abstract String getShapeData(int index);
 	
@@ -274,5 +277,28 @@ public abstract class Shape {
 	public int[] getData()
 	{
 		return data;
+	}
+	
+	public void paint(Graphics2D g)
+	{
+		int unit = TetrisConstants.TILE_SIZE;
+		int size = getMapSize();
+		int ci = size -1;
+		
+		for (int y = 0; y < size; y ++)
+		{
+			for (int x = 0; x < size; x ++)
+			{
+				if (isBlock(x, y))
+				{
+					g.fillRect(
+							x * unit + 1, 
+							(ci-y) * unit + 1, 
+							unit - 2, 
+							unit - 2);
+				}
+
+			}
+		}
 	}
 }

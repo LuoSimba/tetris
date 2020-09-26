@@ -1,14 +1,20 @@
 package game;
 
 
+import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import game.config.TetrisConstants;
 import game.input.Keypad;
 import game.input.MouseMotion;
 import game.input.Tick;
 import game.model.Command;
 import game.model.EventQueue;
+import game.model.Page;
 import game.model.Shape;
 import game.model.Space;
 import game.ui.GamePanel;
@@ -25,6 +31,8 @@ public class App {
 	private Space       space;
 	private EventQueue  queue;
 	private Shape       shape;
+	private Page        shapePic;
+	private Page        shapePicImg;
 	private Tick        tick;
 	private boolean     isPaused;
 
@@ -52,12 +60,18 @@ public class App {
 	
 	private App()
 	{
+		int unit = TetrisConstants.TILE_SIZE;
+		int size = TetrisConstants.MAX_SHAPE_SIZE;
+		
 		win         = new Window();
 		panel       = new GamePanel();
 		sidePanel   = new SidePanel();
 		queue       = new EventQueue();
 		space       = new Space();
 		tick        = new Tick();
+		
+		shapePic    = new Page(size * unit, size * unit);
+		shapePicImg = new Page(size * unit, size * unit);
 		genNextShape();
 		
 		win.add(panel);
@@ -162,6 +176,7 @@ public class App {
 		char type = shapeQueue.charAt(shapeIndex);
 		
 		shape = Shape.create(type);
+		updateShapePic();
 		
 		shapeIndex ++;
 		if (shapeIndex >= shapeQueue.length())
@@ -256,6 +271,7 @@ public class App {
 		}
 		
 		shape = nextShape;
+		updateShapePic();
 		
 		shapeImageFall();
 		refreshUI();
@@ -274,6 +290,43 @@ public class App {
 	public void showMouse()
 	{
 		win.showCursor();
+	}
+	
+	public Page getShapePic()
+	{
+		return shapePic;
+	}
+	
+	public Page getShapePicImg()
+	{
+		return shapePicImg;
+	}
+	
+	private void updateShapePic()
+	{
+		Composite comp = AlphaComposite.getInstance(AlphaComposite.CLEAR);
+		Composite compBackup;
+		Graphics2D g;
+		
+		g = shapePic.getContext();
+		compBackup = g.getComposite();
+		g.setComposite(comp);
+		g.fillRect(0, 0, shapePic.getWidth(), shapePic.getHeight());
+		
+		g.setComposite(compBackup);
+		g.setColor(TetrisConstants.COLOR_TILE);
+		shape.paint(g);
+		g.dispose();
+		
+		g = shapePicImg.getContext();
+		compBackup = g.getComposite();
+		g.setComposite(comp);
+		g.fillRect(0, 0, shapePicImg.getWidth(), shapePicImg.getHeight());
+		
+		g.setComposite(compBackup);
+		g.setColor(TetrisConstants.COLOR_IMAGE);
+		shape.paint(g);
+		g.dispose();
 	}
 }
 

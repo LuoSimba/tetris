@@ -59,46 +59,16 @@ public class GamePanel extends JPanel {
 		
 		// 绘制空间
 		g2.drawImage(app.snapshot(), 0, 0, null);
+		
+		// 先绘制方块镜像
+		g2.drawImage(app.getShapePicImg(), 
+				shape.getX() * unit, 
+				(ci - shape.getImageY() - shape.getMapSize() + 1) * unit, null);
 
-		int[] raster = shape.getData();
-		
-		int base      = shape.getY();
-		int imageBase = shape.getImageY();
-		
-		// 绘制方块和镜像
-		int a = AlphaComposite.SRC;
-		Composite comp = AlphaComposite.getInstance(a);
-		g2.setComposite(comp);
-		
-		for (int y = 0; y < raster.length; y ++)
-		{
-			int row = raster[y];
-			
-			for (int x = 0; x < spaceWidth; x ++)
-			{
-				int bitMask = 1 << (offset + x);
-				
-				if ((bitMask & row) != 0)
-				{
-					// 先绘制镜像
-					g2.setColor(TetrisConstants.COLOR_IMAGE);
-					g2.fillRect(
-							x * unit + 1, 
-							(ci - (y+imageBase)) * unit + 1, 
-							unit - 2,
-							unit - 2);
-					
-					// 再绘制本体
-					g2.setColor(TetrisConstants.COLOR_TILE);
-					g2.fillRect(
-							x * unit + 1, 
-							(ci - (y+base)) * unit + 1, 
-							unit - 2,
-							unit - 2);
-				}
-			}
-		}
-		
+		// 再绘制方块本体
+		g2.drawImage(app.getShapePic(), 
+				shape.getX() * unit, 
+				(ci - shape.getY() - shape.getMapSize() + 1) * unit, null);
 		
 		// 游戏状态
 		if (app.isPaused())
