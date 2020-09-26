@@ -1,6 +1,5 @@
 package game.model;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Arrays;
 
@@ -22,6 +21,11 @@ import game.model.shape.ShapeZ;
  * 3. 方块的左右移动是直接操作位信息，不会改变图形的定义
  * 
  * 4. 方块的上下移动是直接更改方块的坐标，不会改变图形和位信息
+ * 
+ * 方块的镜像：
+ * 
+ * 方块的镜像与方块只是高度可能不同，在 X 轴上的坐标总是与方块
+ * 保持一致。
  */
 public abstract class Shape {
 	
@@ -203,11 +207,6 @@ public abstract class Shape {
 		return y2;
 	}
 	
-	public void restoreImage()
-	{
-		y2 = y;
-	}
-	
 	public final int getIndex()
 	{
 		return shapeIndex;
@@ -225,12 +224,26 @@ public abstract class Shape {
 	{
 		y ++;
 	}
-	
+
+	/**
+	 * 镜像回位，与本体重叠
+	 */
+	public void restoreImage()
+	{
+		y2 = y;
+	}
+
+	/**
+	 * 镜像下落
+	 */
 	public final void imageDown()
 	{
 		y2 --;
 	}
 	
+	/**
+	 * 镜像上移
+	 */
 	public final void imageUp()
 	{
 		y2 ++;
@@ -279,6 +292,12 @@ public abstract class Shape {
 		return data;
 	}
 	
+	/**
+	 * 绘制方块
+	 * 
+	 * 外部已经设置好了方块的颜色，这里只需要在
+	 * 合适的位置绘图。
+	 */
 	public void paint(Graphics2D g)
 	{
 		int unit = TetrisConstants.TILE_SIZE;
