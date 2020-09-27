@@ -38,6 +38,7 @@ public class App {
 	private Page        nextShapePic;
 	private Tick        tick;
 	private boolean     isPaused;
+	private int         rowCount;
 
 	
 	//Integer.toBinaryString(-1);
@@ -62,6 +63,8 @@ public class App {
 		int unit = TetrisConstants.TILE_SIZE;
 		int unit_s = TetrisConstants.TILE_SIZE_SMALL;
 		int size = TetrisConstants.MAX_SHAPE_SIZE;
+		
+		rowCount    = 0;
 		
 		win         = new Window();
 		panel       = new GamePanel();
@@ -249,7 +252,7 @@ public class App {
 			// 合并
 			space.mergeShape(shape, shapePic);
 			// 清除
-			space.clearFullRows();
+			rowCount += space.clearFullRows();
 			// 结束游戏判断
 			//space.checkGameOver();
 			// 生成下一个方块
@@ -333,6 +336,11 @@ public class App {
 		g = nextShapePic.getContext();
 		nextShape.paintPre(g);
 		g.dispose();
+	}
+	
+	public int getRowCount()
+	{
+		return rowCount;
 	}
 }
 

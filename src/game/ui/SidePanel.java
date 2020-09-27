@@ -52,6 +52,7 @@ public class SidePanel extends JPanel {
 		g2.drawString("x=" + shape.getX(), 10, 50);
 		g2.drawString("y=" + shape.getY() + ", " + shape.getImageY(), 10, 70);
 		g2.drawString("index=" + shape.getIndex(), 10, 90);
+		g2.drawString("rows=" + app.getRowCount(), 10, 110);
 		
 		// 下一个方块预览图
 		g2.drawImage(app.getNextShapePic(), 10, 200, null);

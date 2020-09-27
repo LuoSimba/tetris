@@ -168,18 +168,20 @@ public class Space {
 	/**
 	 * ÏûÈ¥ÐÐ
 	 */
-	public void clearFullRows()
+	public int clearFullRows()
 	{
-		//boolean isDel = false;
+		int nRowDel = 0;
 		
 		for (int i = 0; i < dataA.length; i ++)
 		{
 			while (isRowFull(dataA[i]))
 			{
-				//isDel = true;
+				nRowDel ++;
 				deleteRow(i);
 			}
 		}
+		
+		return nRowDel;
 	}
 	
 	/**

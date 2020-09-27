@@ -8,6 +8,7 @@ java gui project
 ## ChangeLog
 
 * 0926 增加彩色方块; 下一个方块提示
+* 0927 记录消去行数
 
 ## TODO
 
