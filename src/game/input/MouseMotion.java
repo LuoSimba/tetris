@@ -1,6 +1,6 @@
 package game.input;
 
-import game.App;
+import game.ui.Window;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -15,6 +15,9 @@ public class MouseMotion implements MouseMotionListener {
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		App.getInstance().showMouse();
+		
+		Window win = Window.getInstance();
+		
+		win.showCursor();
 	}
 }

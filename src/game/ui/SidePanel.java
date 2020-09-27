@@ -1,9 +1,11 @@
 package game.ui;
 
 import game.App;
+import game.config.TetrisConstants;
 import game.model.Shape;
 
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -12,16 +14,11 @@ import java.awt.Graphics2D;
 import javax.swing.JPanel;
 
 public class SidePanel extends JPanel {
+
+	private static final long serialVersionUID = 1L;
 	
 	private Dimension size;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	private static final Font font = new Font("monospace", Font.PLAIN, 20);
-	
 	public SidePanel()
 	{
 		size = new Dimension(100, 100);
@@ -31,24 +28,44 @@ public class SidePanel extends JPanel {
 	public Dimension getPreferredSize() {
 		return size;
 	}
+	
+	private Window getWindow()
+	{
+		Container c = this.getTopLevelAncestor();
+
+		if (c instanceof Window)
+			return (Window) c;
+		
+		return null;
+	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		
+		Window win = getWindow();
+		if (win == null)
+			return;
+		
+		App app = win.getApp();
+		
 		Graphics2D g2 = (Graphics2D) g;
-		App app = App.getInstance();
-		Shape shape = app.currentShape();
-		//super.paintComponent(g);
-		
-		
 		int width = this.getWidth();
 		int height = this.getHeight();
 		
 		g2.clearRect(0, 0, width, height);
 		g2.fillRect(0, 0, width, height);
 		
+		if (app == null)
+			return;
+		
+		
+		
+		
+		Shape shape = app.currentShape();
+		
+		
 		g2.setColor(Color.RED);
-		g2.setFont(font);
+		g2.setFont(TetrisConstants.FONT);
 		g2.drawString("x=" + shape.getX(), 10, 50);
 		g2.drawString("y=" + shape.getY() + ", " + shape.getImageY(), 10, 70);
 		g2.drawString("index=" + shape.getIndex(), 10, 90);

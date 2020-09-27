@@ -1,33 +1,23 @@
 package game;
 
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import game.config.TetrisConstants;
-import game.input.Keypad;
-import game.input.MouseMotion;
 import game.input.Tick;
-import game.model.ColorScheme;
 import game.model.Command;
 import game.model.EventQueue;
 import game.model.Page;
 import game.model.Shape;
 import game.model.ShapeFactory;
 import game.model.Space;
-import game.ui.GamePanel;
-import game.ui.SidePanel;
+import game.signal.GameOverSignal;
 import game.ui.Window;
 
 public class App {
 	
-	private static App app;
-	
 	private Window      win;
-	private GamePanel   panel;
-	private SidePanel   sidePanel;
 	private Space       space;
 	private EventQueue  queue;
 	private ShapeFactory factory;
@@ -38,54 +28,36 @@ public class App {
 	private Page        nextShapePic;
 	private Tick        tick;
 	private boolean     isPaused;
+	private boolean     isGameOver;
 	private int         rowCount;
 
-	
-	//Integer.toBinaryString(-1);
-	public static void main(String[] args)
+	public void dispose()
 	{
-		app = new App();
+		win.setApp(null);
+		win = null;
+	}
+	
+	protected App(Window win)
+	{
+		this.win = win;
+		win.setApp(this);
 		
-		try {
-			app.play();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public static App getInstance() {
-		return app;
-	}
-	
-	private App()
-	{
 		int unit = TetrisConstants.TILE_SIZE;
 		int unit_s = TetrisConstants.TILE_SIZE_SMALL;
 		int size = TetrisConstants.MAX_SHAPE_SIZE;
 		
 		rowCount    = 0;
+		isGameOver  = false;
 		
-		win         = new Window();
-		panel       = new GamePanel();
-		sidePanel   = new SidePanel();
 		queue       = new EventQueue();
 		space       = new Space();
-		tick        = new Tick();
+		tick        = new Tick(this);
 		factory     = new ShapeFactory();
 		
 		shapePic    = new Page(size * unit, size * unit);
 		shapePicImg = new Page(size * unit, size * unit);
 		nextShapePic = new Page(size * unit_s, size * unit_s);
 		genShape();
-		
-		win.add(panel);
-		win.add(sidePanel, BorderLayout.EAST);
-		win.pack();
-		
-		win.addKeyListener(new Keypad());
-		win.addMouseMotionListener(new MouseMotion());
-		win.setVisible(true);
 	}
 	
 	private void refreshUI()
@@ -93,10 +65,9 @@ public class App {
 		win.repaint();
 	}
 	
-	private void play() throws InterruptedException
+	protected void play() throws InterruptedException, GameOverSignal
 	{
-		// 
-		//tick.start();
+		tick.start();
 		//isPaused = false;
 		
 		while (true)
@@ -114,7 +85,7 @@ public class App {
 			case DOWN:
 				moveShapeDown();
 				break;
-			case ROTATE_CW:
+			case ROTATE:
 				rotateShape();
 				refreshUI();
 				break;
@@ -166,6 +137,11 @@ public class App {
 	public boolean isPaused()
 	{
 		return isPaused;
+	}
+	
+	public boolean isGameOver()
+	{
+		return isGameOver;
 	}
 	
 	public EventQueue getQueue()
@@ -239,8 +215,9 @@ public class App {
 	
 	/**
 	 * 移动方块下落
+	 * @throws GameOverSignal 游戏结束
 	 */
-	public void moveShapeDown()
+	public void moveShapeDown() throws GameOverSignal
 	{
 		shape.down();
 		
@@ -254,7 +231,11 @@ public class App {
 			// 清除
 			rowCount += space.clearFullRows();
 			// 结束游戏判断
-			//space.checkGameOver();
+			if (space.isOverflow())
+			{
+				gameOver();
+			}
+			
 			// 生成下一个方块
 			genShape();
 		}
@@ -262,6 +243,19 @@ public class App {
 		refreshUI();
 	}
 	
+	/**
+	 * 游戏结束
+	 */
+	private void gameOver() throws GameOverSignal
+	{
+		isGameOver = true;
+		
+		tick.stop();
+		
+		refreshUI();
+		
+		throw new GameOverSignal();
+	}
 	
 	private void rotateShape()
 	{
@@ -291,16 +285,6 @@ public class App {
 	public BufferedImage snapshot()
 	{
 		return space.getImage();
-	}
-	
-	public void hideMouse()
-	{
-		win.hideCursor();
-	}
-	
-	public void showMouse()
-	{
-		win.showCursor();
 	}
 	
 	public Page getShapePic()

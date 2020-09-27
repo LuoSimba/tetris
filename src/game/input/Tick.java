@@ -2,15 +2,21 @@ package game.input;
 
 import game.App;
 import game.model.Command;
+import game.model.EventQueue;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Tick {
-
-	private Timer timer;
 	
+	private App app;
+	private Timer timer;
 	private TimerTask task;
+	
+	public Tick(App app)
+	{
+		this.app = app;
+	}
 	
 	public void stop()
 	{
@@ -35,12 +41,11 @@ public class Tick {
 			@Override
 			public void run() {
 				
-				try {
-					App.getInstance().getQueue().put(Command.DOWN);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				if (app.isGameOver())
+					return;
+				
+				EventQueue queue = app.getQueue();
+				queue.offer(Command.DOWN);
 			}
 		};
 		

@@ -150,19 +150,25 @@ public class Space {
 				null);
 	}
 	
-	public void checkGameOver()
+	/**
+	 * ¼ì²éÊÇ·ñÒç³ö
+	 */
+	public boolean isOverflow()
 	{
 		int start = TetrisConstants.SPACE_HEIGHT;
 		int end   = TetrisConstants.SPACE_HEIGHT_EX;
+		int bitMask = TetrisConstants.MASK_ROW_FULL;
 		
 		for (int i = start; i < end; i ++)
 		{
-			if (dataA[i] != 0x00000000)
+			int row = dataA[ i ];
+			if ((row & bitMask) != 0)
 			{
-				System.out.println("game over ...");
-				return;
+				return true;
 			}
 		}
+		
+		return false;
 	}
 	
 	/**

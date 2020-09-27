@@ -1,6 +1,7 @@
 package game.config;
 
 import java.awt.Color;
+import java.awt.Font;
 
 public interface TetrisConstants {
 	
@@ -32,4 +33,6 @@ public interface TetrisConstants {
 	Color COLOR_SHADOW = new Color(255, 255, 255, 30);
 	
 	int MAX_SHAPE_SIZE = 4;
+	
+	Font FONT = new Font("monospace", Font.PLAIN, 20);
 }

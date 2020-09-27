@@ -5,7 +5,7 @@ public enum Command {
 	LEFT,
 	RIGHT,
 	DOWN,
-	ROTATE_CW,
+	ROTATE,
 	
 	PAUSE,
 	RESUME,

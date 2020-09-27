@@ -4,9 +4,8 @@ import game.App;
 import game.config.TetrisConstants;
 import game.model.Shape;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Composite;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -36,26 +35,46 @@ public class GamePanel extends JPanel {
 	{
 		return size;
 	}
+	
+	private Window getWindow()
+	{
+		Container c = this.getTopLevelAncestor();
+
+		if (c instanceof Window)
+			return (Window) c;
+		
+		return null;
+	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		
-		Graphics2D g2 = (Graphics2D) g;
-		App app = App.getInstance();
-		Shape shape = app.currentShape();
+		Window win = getWindow();
+		if (win == null)
+			return;
 		
-		int unit            = TetrisConstants.TILE_SIZE;
-		int spaceWidth      = TetrisConstants.SPACE_WIDTH;
-		int spaceRealHeight = TetrisConstants.SPACE_HEIGHT_EX;
-		int offset          = TetrisConstants.WALL_WIDTH;
-		int ci = spaceRealHeight - 1;
+		App app = win.getApp();
+		
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setFont(TetrisConstants.FONT);
 		
 		//g2.clearRect(0, 0, size.width, size.height);
 		g2.translate(padding, padding);
-
+		
 		// ªÊ÷∆±≥æ∞
 		g2.drawImage(bgImg, 0, 0, null);
+
+		if (app == null)
+			return;
 		
+		
+		
+		
+		Shape shape = app.currentShape();
+		
+		int unit            = TetrisConstants.TILE_SIZE;
+		int spaceRealHeight = TetrisConstants.SPACE_HEIGHT_EX;
+		int ci = spaceRealHeight - 1;
 		
 		// ªÊ÷∆ø’º‰
 		g2.drawImage(app.snapshot(), 0, 0, null);
@@ -71,7 +90,12 @@ public class GamePanel extends JPanel {
 				(ci - shape.getY() - shape.getMapSize() + 1) * unit, null);
 		
 		// ”Œœ∑◊¥Ã¨
-		if (app.isPaused())
+		if (app.isGameOver())
+		{
+			g2.setColor(Color.GREEN);
+			g2.drawString("GAME OVER", 100, 100);
+		}
+		else if (app.isPaused())
 		{
 			g2.setColor(Color.GREEN);
 			g2.drawString("PAUSE", 100, 100);
