@@ -62,7 +62,6 @@ public class ShapeFactory {
 	{
 		char type = old.getType();
 		Color fg = old.getColor();
-		Color bg = old.getImgColor();
 		int index = old.rotatePoints(true);
 		int x = old.getX();
 		int y = old.getY();
@@ -70,7 +69,7 @@ public class ShapeFactory {
 		Shape shape = create(type);
 		shape.shapeIndex = index;
 		shape.setPos(x, y);
-		shape.setColor(fg, bg);
+		shape.setColor(fg);
 		
 		return shape;
 	}
@@ -82,13 +81,11 @@ public class ShapeFactory {
 	 * 
 	 * 1. 形状
 	 * 2. 颜色
-	 * 3. 阴影颜色
 	 */
 	public Shape genNext()
 	{
 		char type = queue.charAt(index);
 		Color fg = cs.getColor();
-		Color bg = cs.getImgColor();
 		
 		Shape shape = create(type);
 		
@@ -96,7 +93,7 @@ public class ShapeFactory {
 		
 		shape.setPos(3, 20);
 		
-		shape.setColor(fg, bg);
+		shape.setColor(fg);
 
 		// --
 		index ++;

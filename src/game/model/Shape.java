@@ -5,13 +5,6 @@ import java.awt.Graphics2D;
 import java.util.Arrays;
 
 import game.config.TetrisConstants;
-import game.model.shape.ShapeF;
-import game.model.shape.ShapeI;
-import game.model.shape.ShapeL;
-import game.model.shape.ShapeO;
-import game.model.shape.ShapeS;
-import game.model.shape.ShapeT;
-import game.model.shape.ShapeZ;
 
 /**
  * 方块：
@@ -27,6 +20,10 @@ import game.model.shape.ShapeZ;
  * 
  * 方块的镜像与方块只是高度可能不同，在 X 轴上的坐标总是与方块
  * 保持一致。
+ * 
+ * 颜色：
+ * 方块默认为白色，创建之后可以修改
+ * 镜像的颜色是固定不变的。
  */
 public abstract class Shape {
 	
@@ -36,7 +33,6 @@ public abstract class Shape {
 	private int[] data;
 	protected int shapeIndex;
 	private Color fg;
-	private Color bg;
 	
 	protected Shape()
 	{
@@ -47,6 +43,9 @@ public abstract class Shape {
 		y2 = 20;
 		shapeIndex = 0;
 		data = new int[ mapSize ];
+		
+		fg = TetrisConstants.COLOR_TILE;
+		
 		parse();
 	}
 
@@ -60,20 +59,14 @@ public abstract class Shape {
 		autoFit();
 	}
 	
-	protected void setColor(Color fg, Color bg)
+	protected void setColor(Color fg)
 	{
 		this.fg = fg;
-		this.bg = bg;
 	}
 	
 	protected Color getColor()
 	{
 		return fg;
-	}
-	
-	protected Color getImgColor()
-	{
-		return bg;
 	}
 	
 	public abstract char getType();
@@ -264,7 +257,7 @@ public abstract class Shape {
 	
 	public void paintImage(Graphics2D g)
 	{
-		paint(g, TetrisConstants.TILE_SIZE, bg);
+		paint(g, TetrisConstants.TILE_SIZE, TetrisConstants.COLOR_SHADOW);
 	}
 	
 	public void paintPre(Graphics2D g)
