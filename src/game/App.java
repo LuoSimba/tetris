@@ -40,7 +40,6 @@ public class App {
 	protected App(Window win)
 	{
 		this.win = win;
-		win.setApp(this);
 		
 		int unit = TetrisConstants.TILE_SIZE;
 		int unit_s = TetrisConstants.TILE_SIZE_SMALL;
@@ -58,6 +57,11 @@ public class App {
 		shapePicImg = new Page(size * unit, size * unit);
 		nextShapePic = new Page(size * unit_s, size * unit_s);
 		genShape();
+		
+		// BUGFIX: 只有当实例完全初始化完成后，才能告知 UI 界面
+		// 如果一开始就关联到 Window， UI 在绘制方块时，可能报空指针异常，因为这时候实例可能
+		// 还来不及创建 Shape.
+		win.setApp(this);
 	}
 	
 	private void refreshUI()
