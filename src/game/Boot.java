@@ -1,6 +1,7 @@
 package game;
 
 import game.signal.GameOverSignal;
+import game.sound.LittleStar;
 import game.ui.Window;
 
 public class Boot {
@@ -10,6 +11,12 @@ public class Boot {
 	private static void init()
 	{
 		win = Window.getInstance();
+		
+		//Player player = Player.getPlayer();
+		//player.ding();
+		
+		LittleStar star = new LittleStar();
+		star.play();
 	}
 
 	public static void main(String[] args)
