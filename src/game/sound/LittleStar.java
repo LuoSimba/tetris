@@ -15,8 +15,10 @@ import javax.sound.midi.Track;
 public class LittleStar {
 	
 	private Sequence seq;
-	private Track track;
-	private int scale = 0;
+	private Track track1;
+	private Track track2;
+	private Track currentTrack;
+	private int scale;
 	/**
 	 * ¶¨ÐòÆ÷£¨ÒôÐòÆ÷£©
 	 * 
@@ -29,19 +31,24 @@ public class LittleStar {
 		try {
 			seq = new Sequence(Sequence.PPQ, 4);
 			
-			track = seq.createTrack();
+			track1 = seq.createTrack();
+			track2 = seq.createTrack();
 			
 			ShortMessage msg = new ShortMessage();
 			msg.setMessage(ShortMessage.CONTROL_CHANGE, 0, 7, 60);
-			track.add(new MidiEvent(msg, 0));
+			track1.add(new MidiEvent(msg, 0));
+			
+			
+			currentTrack = track1;
+			scale = 0;
 			
 			// note height
-			int C = 48;
-			int D = 50;
-			int E = 52;
-			int F = 53;
-			int G = 55;
-			int A = 57;
+			int C = 60;
+			int D = 62;
+			int E = 64;
+			int F = 65;
+			int G = 67;
+			int A = 69;
 			
 			addNote(C, 4);
 			addNote(C, 4);
@@ -90,6 +97,70 @@ public class LittleStar {
 			addNote(D, 4);
 			addNote(D, 4);
 			addNote(C, 8);
+			
+			currentTrack = track2;
+			scale = 0;
+			
+			int cc = 36;
+			int ff = 41;
+			int gg = 43;
+			int aa = 45;
+			int bb = 47;
+			int c = 48;
+			int d = 50;
+			int e = 52;
+			int f = 53;
+			addNote(cc, 4);
+			addNote(c, 4);
+			addNote(e, 4);
+			addNote(c, 4);
+			addNote(f, 4);
+			addNote(c, 4);
+			addNote(e, 4);
+			addNote(c, 4);
+
+			addNote(d, 4);
+			addNote(bb, 4);
+			addNote(c, 4);
+			addNote(aa, 4);
+			addNote(ff, 4);
+			addNote(gg, 4);
+			addNote(cc, 8);
+
+			addNote(e, 4);
+			addNote(gg, 4);
+			addNote(d, 4);
+			addNote(gg, 4);
+			addNote(c, 4);
+			addNote(gg, 4);
+			addNote(bb, 4);
+			addNote(gg, 4);
+
+			addNote(e, 4);
+			addNote(gg, 4);
+			addNote(e, 4);
+			addNote(gg, 4);
+			addNote(c, 4);
+			addNote(gg, 4);
+			addNote(bb, 4);
+			addNote(gg, 4);
+
+			addNote(cc, 4);
+			addNote(c, 4);
+			addNote(e, 4);
+			addNote(c, 4);
+			addNote(f, 4);
+			addNote(c, 4);
+			addNote(e, 4);
+			addNote(c, 4);
+
+			addNote(d, 4);
+			addNote(bb, 4);
+			addNote(c, 4);
+			addNote(aa, 4);
+			addNote(ff, 4);
+			addNote(gg, 4);
+			addNote(cc, 8);
 
 		} catch (InvalidMidiDataException e) {
 			// TODO Auto-generated catch block
@@ -145,8 +216,8 @@ public class LittleStar {
 			MidiEvent event1 = new MidiEvent(msg1, noteTimevalueScale);
 			MidiEvent event2 = new MidiEvent(msg2, scale);
 			
-			track.add(event1);
-			track.add(event2);
+			currentTrack.add(event1);
+			currentTrack.add(event2);
 			
 		} catch (InvalidMidiDataException e) {
 			// TODO Auto-generated catch block
