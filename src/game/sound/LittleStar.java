@@ -17,7 +17,12 @@ public class LittleStar {
 	private Sequence seq;
 	private Track track;
 	private int scale = 0;
-	private Sequencer seqr;
+	/**
+	 * 定序器（音序器）
+	 * 
+	 * 负责播放音符序列
+	 */
+	private Sequencer player;
 	
 	public LittleStar()
 	{
@@ -88,15 +93,17 @@ public class LittleStar {
 		}
 		
 		try {
-			seqr = MidiSystem.getSequencer();
+			player = MidiSystem.getSequencer();
 			
-			seqr.setSequence(seq);
-			seqr.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
+			player.setSequence(seq);
+			player.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
+			
+			
 			//seqr.addMetaEventListener(new MetaProc(seqr));
 			//Receiver recv = seqr.getReceiver();
 			//seqr.setTrackMute(0, true);
 			
-			seqr.open();
+			player.open();
 			
 		} catch (MidiUnavailableException e) {
 			// TODO Auto-generated catch block
@@ -109,7 +116,12 @@ public class LittleStar {
 	
 	public void play()
 	{
-		seqr.start();
+		// 每分钟 90 拍
+		// 这里调整歌曲的播放速度
+		player.setTempoInBPM(90);
+		player.start();
+		
+		// player.isRunning();
 	}
 	
 	private void addNote(int noteHeight, int interval)
