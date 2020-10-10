@@ -25,6 +25,7 @@ public class LittleStar {
 	 * 负责播放音符序列
 	 */
 	private Sequencer player;
+	private int currentStrength;
 	
 	public LittleStar()
 	{
@@ -41,6 +42,7 @@ public class LittleStar {
 			
 			currentTrack = track1;
 			scale = 0;
+			currentStrength = 80;
 			
 			// note height
 			int C = 60;
@@ -98,8 +100,65 @@ public class LittleStar {
 			addNote(D, 4);
 			addNote(C, 8);
 			
+			C = 72;
+			D = 74;
+			E = 76;
+			F = 77;
+			G = 79;
+			A = 81;
+			
+			addNote(C, 4);
+			addNote(C, 4);
+			addNote(G, 4);
+			addNote(G, 4);
+			addNote(A, 4);
+			addNote(A, 4);
+			addNote(G, 8);
+			
+			addNote(F, 4);
+			addNote(F, 4);
+			addNote(E, 4);
+			addNote(E, 4);
+			addNote(D, 4);
+			addNote(D, 4);
+			addNote(C, 8);
+			
+			addNote(G, 4);
+			addNote(G, 4);
+			addNote(F, 4);
+			addNote(F, 4);
+			addNote(E, 4);
+			addNote(E, 4);
+			addNote(D, 8);
+			
+			addNote(G, 4);
+			addNote(G, 4);
+			addNote(F, 4);
+			addNote(F, 4);
+			addNote(E, 4);
+			addNote(E, 4);
+			addNote(D, 8);
+			
+			addNote(C, 4);
+			addNote(C, 4);
+			addNote(G, 4);
+			addNote(G, 4);
+			addNote(A, 4);
+			addNote(A, 4);
+			addNote(G, 8);
+			
+			addNote(F, 4);
+			addNote(F, 4);
+			addNote(E, 4);
+			addNote(E, 4);
+			addNote(D, 4);
+			addNote(D, 4);
+			addNote(C, 8);
+
+			
 			currentTrack = track2;
 			scale = 0;
+			currentStrength = 40;
 			
 			int cc = 36;
 			int ff = 41;
@@ -138,7 +197,7 @@ public class LittleStar {
 
 			addNote(e, 4);
 			addNote(gg, 4);
-			addNote(e, 4);
+			addNote(d, 4);
 			addNote(gg, 4);
 			addNote(c, 4);
 			addNote(gg, 4);
@@ -161,6 +220,68 @@ public class LittleStar {
 			addNote(ff, 4);
 			addNote(gg, 4);
 			addNote(cc, 8);
+			
+			cc += 12;
+			ff += 12;
+			gg += 12;
+			aa += 12;
+			bb += 12;
+			c  += 12;
+			d  += 12;
+			e  += 12;
+			f  += 12;
+			addNote(cc, 4);
+			addNote(c, 4);
+			addNote(e, 4);
+			addNote(c, 4);
+			addNote(f, 4);
+			addNote(c, 4);
+			addNote(e, 4);
+			addNote(c, 4);
+
+			addNote(d, 4);
+			addNote(bb, 4);
+			addNote(c, 4);
+			addNote(aa, 4);
+			addNote(ff, 4);
+			addNote(gg, 4);
+			addNote(cc, 8);
+
+			addNote(e, 4);
+			addNote(gg, 4);
+			addNote(d, 4);
+			addNote(gg, 4);
+			addNote(c, 4);
+			addNote(gg, 4);
+			addNote(bb, 4);
+			addNote(gg, 4);
+
+			addNote(e, 4);
+			addNote(gg, 4);
+			addNote(d, 4);
+			addNote(gg, 4);
+			addNote(c, 4);
+			addNote(gg, 4);
+			addNote(bb, 4);
+			addNote(gg, 4);
+
+			addNote(cc, 4);
+			addNote(c, 4);
+			addNote(e, 4);
+			addNote(c, 4);
+			addNote(f, 4);
+			addNote(c, 4);
+			addNote(e, 4);
+			addNote(c, 4);
+
+			addNote(d, 4);
+			addNote(bb, 4);
+			addNote(c, 4);
+			addNote(aa, 4);
+			addNote(ff, 4);
+			addNote(gg, 4);
+			addNote(cc, 8);
+
 
 		} catch (InvalidMidiDataException e) {
 			// TODO Auto-generated catch block
@@ -206,8 +327,8 @@ public class LittleStar {
 		ShortMessage msg2 = new ShortMessage();
 		
 		try {
-			msg1.setMessage(ShortMessage.NOTE_ON, 0, noteHeight, 100);
-			msg2.setMessage(ShortMessage.NOTE_OFF, 0, noteHeight, 100);
+			msg1.setMessage(ShortMessage.NOTE_ON, 0, noteHeight, currentStrength);
+			msg2.setMessage(ShortMessage.NOTE_OFF, 0, noteHeight, currentStrength);
 			
 			int noteTimevalueScale = scale;
 			scale += interval;
