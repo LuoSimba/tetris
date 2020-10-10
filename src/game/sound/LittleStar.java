@@ -31,6 +31,10 @@ public class LittleStar {
 			
 			track = seq.createTrack();
 			
+			ShortMessage msg = new ShortMessage();
+			msg.setMessage(ShortMessage.CONTROL_CHANGE, 0, 7, 60);
+			track.add(new MidiEvent(msg, 0));
+			
 			// note height
 			int C = 48;
 			int D = 50;
