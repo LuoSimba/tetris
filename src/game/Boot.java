@@ -1,7 +1,10 @@
 package game;
 
+import javax.sound.midi.InvalidMidiDataException;
+
 import game.signal.GameOverSignal;
 import game.sound.LittleStar;
+import game.sound.RealPlayer;
 import game.ui.Window;
 
 public class Boot {
@@ -15,8 +18,14 @@ public class Boot {
 		//Player player = Player.getPlayer();
 		//player.ding();
 		
-		LittleStar star = new LittleStar();
-		star.play();
+		RealPlayer player = new RealPlayer();
+		try {
+			player.loadMusic(new LittleStar());
+			player.play();
+		} catch (InvalidMidiDataException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public static void main(String[] args)
