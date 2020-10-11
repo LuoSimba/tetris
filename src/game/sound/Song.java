@@ -6,6 +6,10 @@ import javax.sound.midi.Sequence;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
+// read from file
+//MidiSystem.getSequence(file);
+
+
 abstract class Song extends Sequence {
 	
 	private int scale;
@@ -16,6 +20,8 @@ abstract class Song extends Sequence {
 	private Track track1;
 	private Track track2;
 	private Track currentTrack;
+	
+	abstract public int getTempo();
 
 	public Song() throws InvalidMidiDataException
 	{
@@ -49,13 +55,16 @@ abstract class Song extends Sequence {
 	protected void addNote(int noteHeight, int interval)
 	{
 		// prepare message
+		// 封装音符属性
 		ShortMessage msg1 = new ShortMessage();
 		ShortMessage msg2 = new ShortMessage();
 		
 		try {
+			// set: command, channel, noteHeight, noteVolumn(音符的音量大小)
 			msg1.setMessage(ShortMessage.NOTE_ON, 0, noteHeight, currentStrength);
 			msg2.setMessage(ShortMessage.NOTE_OFF, 0, noteHeight, currentStrength);
 			
+			// 计算音符被开始演奏的 MIDI 刻度位置（在音轨上的位置）
 			int noteTimevalueScale = scale;
 			scale += interval;
 			

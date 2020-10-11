@@ -6,6 +6,14 @@ import javax.sound.midi.InvalidMidiDataException;
  * ±≥æ∞“Ù¿÷ “ √……Ω–°µ˜
  */
 class Yimeng extends Song {
+	
+	@Override
+	public int getTempo()
+	{
+		return 90;
+	}
+	
+
 
 	public Yimeng() throws InvalidMidiDataException
 	{

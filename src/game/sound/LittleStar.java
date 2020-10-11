@@ -7,6 +7,14 @@ import javax.sound.midi.InvalidMidiDataException;
  */
 class LittleStar extends Song {
 	
+	@Override
+	public int getTempo()
+	{
+		return 90;
+	}
+	
+
+	
 	private void rightHand(int base)
 	{
 		int C = base;

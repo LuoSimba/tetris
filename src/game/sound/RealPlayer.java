@@ -69,6 +69,7 @@ public class RealPlayer {
 		list = new ArrayList<Song>();
 		
 		try {
+			list.add(new BanDal());
 			list.add(new LittleStar());
 			list.add(new Yimeng());
 		} catch (InvalidMidiDataException e) {
@@ -80,11 +81,14 @@ public class RealPlayer {
 		loadMusic(list.get(0));
 	}
 	
-	private void loadMusic(Sequence seq)
+	private void loadMusic(Song song)
 	{
 		try {
-			player.setSequence(seq);
+			player.setSequence(song);
 			player.setMicrosecondPosition(0);
+			// 每分钟 90 拍
+			// 这里调整歌曲的播放速度
+			player.setTempoInBPM(song.getTempo());
 			//player.setTrackMute(0, true);
 		} catch (InvalidMidiDataException e) {
 			// TODO Auto-generated catch block
@@ -94,9 +98,6 @@ public class RealPlayer {
 	
 	public void play()
 	{
-		// 每分钟 90 拍
-		// 这里调整歌曲的播放速度
-		player.setTempoInBPM(90);
 		player.start();
 		
 		// player.isRunning();
