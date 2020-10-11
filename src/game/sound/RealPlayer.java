@@ -24,8 +24,6 @@ public class RealPlayer {
 			
 			//seqr.addMetaEventListener(new MetaProc(seqr));
 			//Receiver recv = seqr.getReceiver();
-			//seqr.setTrackMute(0, true);
-
 			
 			player.open();
 		} catch (MidiUnavailableException e) {
@@ -38,6 +36,7 @@ public class RealPlayer {
 	{
 		try {
 			player.setSequence(seq);
+			//player.setTrackMute(0, true);
 		} catch (InvalidMidiDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
