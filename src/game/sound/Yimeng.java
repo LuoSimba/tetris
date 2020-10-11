@@ -5,7 +5,7 @@ import javax.sound.midi.InvalidMidiDataException;
 /**
  * ±≥æ∞“Ù¿÷ “ √……Ω–°µ˜
  */
-public class Yimeng extends Song {
+class Yimeng extends Song {
 
 	public Yimeng() throws InvalidMidiDataException
 	{

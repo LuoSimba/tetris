@@ -5,7 +5,7 @@ import javax.sound.midi.InvalidMidiDataException;
 /**
  * ±≥æ∞“Ù¿÷ –°–«–«
  */
-public class LittleStar extends Song {
+class LittleStar extends Song {
 	
 	private void rightHand(int base)
 	{
