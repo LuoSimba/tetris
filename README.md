@@ -5,6 +5,10 @@ java gui project
 
 ![snapshot](etc/snapshot.png)
 
+## 背景音乐
+
+* 小星星
+
 ## ChangeLog
 
 * 1010 增加背景音乐
