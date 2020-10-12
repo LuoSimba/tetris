@@ -1,5 +1,7 @@
 package game.sound.res;
 
+import game.sound.Song;
+
 import java.io.IOException;
 import java.net.URL;
 
@@ -38,14 +40,22 @@ public class Test {
 	private static void playSound(Sequence seq) throws MidiUnavailableException, InvalidMidiDataException
 	{
 		Sequencer player = MidiSystem.getSequencer();
-		player.setSequence(seq);
 		player.open();
+		
+		player.setSequence(seq);
+		if (seq instanceof Song)
+		{
+			player.setTempoInBPM(((Song)seq).getTempo());
+		}
+		
 		player.start();
 	}
 	
 	public static void main(String[] args) throws InvalidMidiDataException, IOException, MidiUnavailableException
 	{
-		Sequence seq = loadSequence("MIN-G.MID");
+		Sequence seq = loadSequence("min-g.mid");
+		
+		//seq = new game.sound.BanDal();
 		
 		playSound(seq);
 	}

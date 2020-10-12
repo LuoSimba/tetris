@@ -10,7 +10,7 @@ import javax.sound.midi.Track;
 //MidiSystem.getSequence(file);
 
 
-abstract class Song extends Sequence {
+public abstract class Song extends Sequence {
 	
 	private int scale;
 	private int currentStrength;

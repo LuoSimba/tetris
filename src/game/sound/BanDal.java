@@ -5,7 +5,7 @@ import javax.sound.midi.InvalidMidiDataException;
 /**
  * ±≥æ∞“Ù¿÷ –°∞◊¥¨
  */
-class BanDal extends Song {
+public class BanDal extends Song {
 	
 	@Override
 	public int getTempo()
