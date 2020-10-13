@@ -6,13 +6,17 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import javax.sound.midi.ControllerEventListener;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MetaEventListener;
 import javax.sound.midi.MetaMessage;
+import javax.sound.midi.MidiChannel;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
+import javax.sound.midi.ShortMessage;
+import javax.sound.midi.Synthesizer;
 
 public class RealPlayer {
 	
@@ -39,6 +43,30 @@ public class RealPlayer {
 		}
 	}
 	
+	private class CtrlProc implements ControllerEventListener {
+
+		@Override
+		public void controlChange(ShortMessage event) {
+			
+			int cmd     = event.getCommand();
+			int channel = event.getChannel();
+			int data1   = event.getData1();
+			int data2   = event.getData2();
+			
+			// 不允许修改音量
+			if (cmd == ShortMessage.CONTROL_CHANGE && data1 == 7)
+			{
+				int volumn = ( data2 * 50 ) / 127;
+				
+				synth.getChannels()[channel].controlChange(7, volumn);
+			}
+			else 
+			{
+				System.out.println("cmd: " + cmd);
+			}
+		}
+	}
+	
 	
 	/**
 	 * 放置歌曲列表
@@ -52,14 +80,24 @@ public class RealPlayer {
 	 */
 	private Sequencer player;
 	
+	private Synthesizer synth;
+	
 	public RealPlayer()
 	{
+		
 		try {
-			player = MidiSystem.getSequencer();
+			synth = MidiSystem.getSynthesizer();
+			synth.open();
+			
+			player = MidiSystem.getSequencer(false);
 			player.addMetaEventListener(new MetaProc());
+			int[] ctls = { 7 };
+			player.addControllerEventListener(new CtrlProc(), ctls);
+			player.open();
 			//player.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
 			
-			player.open();
+			// connect(player->synth)
+			player.getTransmitter().setReceiver(synth.getReceiver());
 		} catch (MidiUnavailableException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -69,9 +107,9 @@ public class RealPlayer {
 		list = new ArrayList<Sequence>();
 		
 		try {
-			list.add(getSequence("Fur-Elise"));
-			list.add(getSequence("LetUsSwayTwinOars"));
 			list.add(getSequence("min-g"));
+			list.add(getSequence("LetUsSwayTwinOars"));
+			list.add(getSequence("Fur-Elise"));
 			list.add(new BanDal());
 			list.add(new LittleStar());
 			list.add(new Yimeng());
@@ -108,6 +146,7 @@ public class RealPlayer {
 		try {
 			player.setSequence(song);
 			player.setMicrosecondPosition(0);
+
 			// 每分钟 90 拍
 			// 这里调整歌曲的播放速度
 			if (song instanceof Song)
@@ -115,10 +154,24 @@ public class RealPlayer {
 				player.setTempoInBPM(((Song)song).getTempo());
 			}
 			
+			// 总是将音量设置为固定值
+			setVolumn(50);
+			
 			//player.setTrackMute(0, true);
 		} catch (InvalidMidiDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	
+	private void setVolumn(int val)
+	{
+		MidiChannel[] list = synth.getChannels();
+		
+		for (MidiChannel ch : list)
+		{
+			//ch.setMute(true);
+			ch.controlChange(7, val);
 		}
 	}
 	

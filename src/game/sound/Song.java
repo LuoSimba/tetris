@@ -30,10 +30,6 @@ public abstract class Song extends Sequence {
 		track1 = this.createTrack();
 		track2 = this.createTrack();
 		switchTrack(1);
-		
-		ShortMessage msg = new ShortMessage();
-		msg.setMessage(ShortMessage.CONTROL_CHANGE, 0, 7, 60);
-		track1.add(new MidiEvent(msg, 0));
 	}
 	
 	protected void switchTrack(int trackId)
@@ -61,6 +57,7 @@ public abstract class Song extends Sequence {
 		
 		try {
 			// set: command, channel, noteHeight, noteVolumn(音符的音量大小)
+			//ShortMessage.CONTROL_CHANGE;
 			msg1.setMessage(ShortMessage.NOTE_ON, 0, noteHeight, currentStrength);
 			msg2.setMessage(ShortMessage.NOTE_OFF, 0, noteHeight, currentStrength);
 			
