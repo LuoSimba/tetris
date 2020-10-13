@@ -7,7 +7,7 @@ java gui project
 
 ## 背景音乐
 
-（MIDI 文件下载自 http://midi.midicn.com）
+（MIDI 文件下载自 http://midi.midicn.com ）
 
 * 小星星
 * 沂蒙山小调
