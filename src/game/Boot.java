@@ -12,9 +12,6 @@ public class Boot {
 	{
 		win = Window.getInstance();
 		
-		//Player player = Player.getPlayer();
-		//player.ding();
-		
 		RealPlayer player = new RealPlayer();
 		player.play();
 	}

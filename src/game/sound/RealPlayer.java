@@ -94,6 +94,7 @@ public class RealPlayer {
 			int[] ctls = { 7 };
 			player.addControllerEventListener(new CtrlProc(), ctls);
 			player.open();
+			// player.close();
 			//player.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
 			
 			// connect(player->synth)

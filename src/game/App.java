@@ -13,6 +13,7 @@ import game.model.Shape;
 import game.model.ShapeFactory;
 import game.model.Space;
 import game.signal.GameOverSignal;
+import game.sound.Pianist;
 import game.ui.Window;
 
 public class App {
@@ -27,6 +28,7 @@ public class App {
 	private Page        shapePicImg;
 	private Page        nextShapePic;
 	private Tick        tick;
+	private Pianist     pianist;
 	private boolean     isPaused;
 	private boolean     isGameOver;
 	private int         rowCount;
@@ -52,6 +54,8 @@ public class App {
 		space       = new Space();
 		tick        = new Tick(this);
 		factory     = new ShapeFactory();
+		
+		pianist     = new Pianist();
 		
 		shapePic    = new Page(size * unit, size * unit);
 		shapePicImg = new Page(size * unit, size * unit);
@@ -232,8 +236,18 @@ public class App {
 			shape.up();
 			// 合并
 			space.mergeShape(shape, shapePic);
+			pianist.playKnock();
+			
 			// 清除
-			rowCount += space.clearFullRows();
+			int rows = space.clearFullRows();
+			
+			rowCount += rows;
+			
+			if (rows > 0)
+			{
+				pianist.ding();
+			}
+			
 			// 结束游戏判断
 			if (space.isOverflow())
 			{
@@ -283,6 +297,7 @@ public class App {
 		updateShapePic();
 		
 		shapeImageFall();
+		pianist.playRotate();
 		refreshUI();
 	}
 	
