@@ -90,13 +90,20 @@ public class ShapeFactory {
 	}
 	
 	/**
-	 * 生成足够多的方块，放入队列
+	 * 生成一组方块，放入队列
+	 * 
+	 * 按照模板字符串指定的顺序，一个一个生成方块
+	 * 
+	 * 需要给定方块的属性：
+	 * 
+	 * 1. 形状
+	 * 2. 颜色
 	 */
-	private void genMoreShapes()
+	private void genMoreShapes(String templete)
 	{
-		for (int i = 0; i < ALL_SHAPES.length(); i ++)
+		for (int i = 0; i < templete.length(); i ++)
 		{
-			char type = ALL_SHAPES.charAt(i);
+			char type = templete.charAt(i);
 			
 			Color fg = cs.getColor();
 			
@@ -113,18 +120,38 @@ public class ShapeFactory {
 		}
 	}
 	
+	private void genBag7()
+	{
+		StringBuffer temp = new StringBuffer(ALL_SHAPES);
+		
+		// 打乱顺序
+		for (int i = temp.length() -1; i > 0; i --)
+		{
+			int tar = Util.random(i + 1);
+			
+			if (tar != i)
+			{
+				char ci = temp.charAt(i);
+				temp.setCharAt(i, temp.charAt(tar));
+				temp.setCharAt(tar, ci);
+			}
+		}
+		
+		genMoreShapes(temp.toString());
+	}
+	
 	/**
-	 * 生成下一个方块
-	 * 
-	 * 需要给定方块的属性：
-	 * 
-	 * 1. 形状
-	 * 2. 颜色
+	 * 获取下一个方块
 	 */
 	synchronized public Shape genNext()
 	{
 		if (queue.size() == 0)
-			genMoreShapes();
+		{
+			// 按照一组固定的顺序生成方块
+			//genMoreShapes(ALL_SHAPES);
+			// 按照 BAG7 方式生成方块
+			genBag7();
+		}
 		
 		return queue.poll();
 	}
