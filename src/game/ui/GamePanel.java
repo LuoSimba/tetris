@@ -15,14 +15,13 @@ import javax.swing.JPanel;
 public class GamePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
-	private final int padding = 30;
 	private final Dimension size;
 
 	public GamePanel()
 	{
 		int unit        = TetrisConstants.TILE_SIZE;
-		int widthPixel  = TetrisConstants.SPACE_WIDTH * unit + padding * 2;
-		int heightPixel = TetrisConstants.SPACE_HEIGHT_EX * unit + padding * 2;
+		int widthPixel  = TetrisConstants.SPACE_WIDTH * unit;
+		int heightPixel = TetrisConstants.SPACE_HEIGHT_EX * unit;
 		
 		size = new Dimension(widthPixel, heightPixel);
 	}
@@ -58,7 +57,7 @@ public class GamePanel extends JPanel {
 		g2.setFont(TetrisConstants.FONT);
 		
 		//g2.clearRect(0, 0, size.width, size.height);
-		g2.translate(padding, padding);
+		//g2.translate(0, 0);
 		
 		// ªÊ÷∆±≥æ∞
 		int boxWidth  = TetrisConstants.SPACE_WIDTH;

@@ -10,9 +10,14 @@ import java.awt.Cursor;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.MemoryImageSource;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.WindowConstants;
 
 /**
@@ -43,7 +48,7 @@ public class Window extends JFrame {
 		this.setResizable(false);
 		this.setBounds(500, 50, 200, 200);
 		this.enableInputMethods(false);
-	
+		
 		// 创建一个透明的鼠标光标
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		Point pt = new Point(0, 0);
@@ -53,6 +58,33 @@ public class Window extends JFrame {
 		Image imageCursor = tk.getImage(classUrl);*/
 		cursor = tk.createCustomCursor(imageCursor, pt, "cursor");
 		isCursorShow = true;
+		
+		// set up the menu bar.
+		JMenuBar menubar = new JMenuBar();
+		this.setJMenuBar(menubar);
+		
+		JMenu menu = new JMenu("文件");
+		menubar.add(menu);
+		
+		JMenuItem item = new JMenuItem("退出");
+		menu.add(item);
+		
+		ActionListener al = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String command = e.getActionCommand();
+				
+				if (command == "退出")
+				{
+					System.exit(0);
+				}
+				else
+				{
+					System.out.println("菜单命令：" + command);
+				}
+			}
+		};
+		item.addActionListener(al);
 		
 		this.add(new GamePanel());
 		this.add(new SidePanel(), BorderLayout.EAST);
