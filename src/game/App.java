@@ -31,7 +31,7 @@ public class App {
 	private Pianist     pianist;
 	private boolean     isPaused;
 	private boolean     isGameOver;
-	private int         rowCount;
+	private int         score;
 
 	public void dispose()
 	{
@@ -47,7 +47,7 @@ public class App {
 		int unit_s = TetrisConstants.TILE_SIZE_SMALL;
 		int size = TetrisConstants.MAX_SHAPE_SIZE;
 		
-		rowCount    = 0;
+		score    = 0;
 		isGameOver  = false;
 		
 		queue       = new EventQueue();
@@ -238,10 +238,24 @@ public class App {
 			// Çå³ý
 			int rows = space.clearFullRows();
 			
-			rowCount += rows;
-			
-			if (rows > 0)
+			if (rows >= 4)
 			{
+				score += 6;
+				pianist.ding();
+			}
+			else if (rows == 3)
+			{
+				score += 4;
+				pianist.ding();
+			}
+			else if (rows == 2)
+			{
+				score += 2;
+				pianist.ding();
+			}
+			else if (rows == 1)
+			{
+				score ++;
 				pianist.ding();
 			}
 			
@@ -338,9 +352,9 @@ public class App {
 		g.dispose();
 	}
 	
-	public int getRowCount()
+	public int getScore()
 	{
-		return rowCount;
+		return score;
 	}
 }
 

@@ -1,9 +1,16 @@
 # tetris
-java gui project
+俄罗斯方块（java gui project）
 
 ## 游戏界面
 
 ![snapshot](etc/snapshot.png)
+
+## 游戏规则
+### 计分规则
+
+* 每消去 1 行计 1 分
+* 同时消去 3 行，计 4 分
+* 同时消去 4 行，计 6 分
 
 ## 背景音乐
 
@@ -27,8 +34,7 @@ java gui project
 
 ## TODO
 
-* 没有逆时针旋转
-* 没有实现计分，关卡
+* 没有实现关卡
 * 旋转碰撞检测仍有问题
 * 没有游戏规则说明
 * 没有构建说明

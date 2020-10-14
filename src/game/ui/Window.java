@@ -38,7 +38,7 @@ public class Window extends JFrame {
 	
 	private Window()
 	{
-		this.setTitle("Tetris");
+		this.setTitle("¶íÂÞË¹·½¿é");
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.setResizable(false);
 		this.setBounds(500, 50, 200, 200);

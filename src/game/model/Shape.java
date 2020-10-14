@@ -165,6 +165,11 @@ public abstract class Shape {
 		return y2;
 	}
 	
+	/**
+	 * 一组方块的变形按照顺时针的顺序排列
+	 * 
+	 * 如果一组方块共有 4 种变形，则可能的 index 取值为 [0,1,2,3]
+	 */
 	public final int getIndex()
 	{
 		return shapeIndex;
