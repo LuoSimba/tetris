@@ -110,7 +110,6 @@ public class RealPlayer {
 		try {
 			list.add(getSequence("min-g"));
 			list.add(getSequence("LetUsSwayTwinOars"));
-			list.add(getSequence("Fur-Elise"));
 			list.add(new BanDal());
 			list.add(new LittleStar());
 			list.add(new Yimeng());

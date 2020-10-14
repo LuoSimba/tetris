@@ -95,7 +95,6 @@ public class App {
 				break;
 			case ROTATE:
 				rotateShape();
-				refreshUI();
 				break;
 			case NEXT_SHAPE:
 				genShape();
@@ -113,8 +112,6 @@ public class App {
 			break;
 			}
 		}
-		
-		//System.out.println("end play ...");
 	}
 	
 	/**

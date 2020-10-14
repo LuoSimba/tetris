@@ -1,9 +1,12 @@
 package game.sound;
 
 import javax.sound.midi.Instrument;
+import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiChannel;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Sequence;
+import javax.sound.midi.Sequencer;
 import javax.sound.midi.Soundbank;
 import javax.sound.midi.Synthesizer;
 
@@ -18,25 +21,45 @@ public class Pianist {
 	
 	private MidiChannel chPiano;
 	
+	private Sequence seq;
+	
+	/**
+	 * 一个音序器占用一个线程
+	 * 
+	 * 如果创建成千个音序器同时播放，虚拟机就会吃不消
+	 */
+	private Sequencer seqr;
+	
 	public Pianist()
 	{
 		
-		//Sequence seq = Text.getBasic();
-
 		try {
 			synth = MidiSystem.getSynthesizer();
+			// open before get sound-bank
+			synth.open();
 			
 			Soundbank sb = synth.getDefaultSoundbank();
 			Instrument[] instruments = sb.getInstruments();
 			synth.loadInstrument(instruments[0]);
 			
-			synth.open();
-			
 			MidiChannel[] channels = synth.getChannels();
 			chPiano = channels[0];
 			chPiano.controlChange(7, 100);
 			
+			
+			seqr = MidiSystem.getSequencer(false);
+			seqr.open();
+			seqr.getTransmitter().setReceiver(synth.getReceiver());
 		} catch (MidiUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		try {
+			seq = new Text();
+		} catch (InvalidMidiDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -70,5 +93,24 @@ public class Pianist {
 		chPiano.noteOff(C, 100);
 		chPiano.noteOff(E, 100);
 		chPiano.noteOff(G, 100);
+	}
+	
+	synchronized private void playMusic(Sequence seq)
+	{
+		try {
+			
+			seqr.setSequence(seq);
+			seqr.setMicrosecondPosition(0);
+			seqr.start();
+			
+		} catch (InvalidMidiDataException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void playMusic()
+	{
+		playMusic(seq);
 	}
 }
