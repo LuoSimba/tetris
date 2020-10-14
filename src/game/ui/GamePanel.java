@@ -17,7 +17,6 @@ public class GamePanel extends JPanel {
 	
 	private final int padding = 30;
 	private final Dimension size;
-	private final BackgroundImage bgImg;
 
 	public GamePanel()
 	{
@@ -26,8 +25,6 @@ public class GamePanel extends JPanel {
 		int heightPixel = TetrisConstants.SPACE_HEIGHT_EX * unit + padding * 2;
 		
 		size = new Dimension(widthPixel, heightPixel);
-		
-		bgImg         = new BackgroundImage();
 	}
 	
 	@Override
@@ -49,6 +46,8 @@ public class GamePanel extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g) {
 		
+		int unit = TetrisConstants.TILE_SIZE;
+		
 		Window win = getWindow();
 		if (win == null)
 			return;
@@ -62,7 +61,11 @@ public class GamePanel extends JPanel {
 		g2.translate(padding, padding);
 		
 		// 绘制背景
-		g2.drawImage(bgImg, 0, 0, null);
+		int boxWidth  = TetrisConstants.SPACE_WIDTH;
+		int boxHeight = TetrisConstants.SPACE_HEIGHT_EX;
+		int edenHeight = boxHeight - TetrisConstants.SPACE_HEIGHT;
+		g2.setColor(TetrisConstants.COLOR_SPACE);
+		g2.fillRect(0, 0, boxWidth * unit, boxHeight * unit);
 
 		if (app == null)
 			return;
@@ -72,9 +75,7 @@ public class GamePanel extends JPanel {
 		
 		Shape shape = app.currentShape();
 		
-		int unit            = TetrisConstants.TILE_SIZE;
-		int spaceRealHeight = TetrisConstants.SPACE_HEIGHT_EX;
-		int ci = spaceRealHeight - 1;
+		int ci = boxHeight - 1;
 		
 		// 绘制空间
 		g2.drawImage(app.snapshot(), 0, 0, null);
@@ -88,6 +89,11 @@ public class GamePanel extends JPanel {
 		g2.drawImage(app.getShapePic(), 
 				shape.getX() * unit, 
 				(ci - shape.getY() - shape.getMapSize() + 1) * unit, null);
+		
+		// 出生区阴影
+		g2.setColor(TetrisConstants.COLOR_EDEN);
+		g2.fillRect(0, 0, boxWidth * unit, edenHeight * unit);
+
 		
 		// 游戏状态
 		if (app.isGameOver())

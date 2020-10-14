@@ -28,7 +28,7 @@ public interface TetrisConstants {
 	
 	// ÅäÉ«
 	Color COLOR_SPACE = new Color(30, 30, 30);
-	Color COLOR_EDEN  = new Color(55, 30, 30);
+	Color COLOR_EDEN  = new Color(55, 30, 30, 220);
 	Color COLOR_TILE   = new Color(245, 245, 245);
 	Color COLOR_SHADOW = new Color(255, 255, 255, 30);
 	
