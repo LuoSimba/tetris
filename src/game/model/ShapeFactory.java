@@ -9,6 +9,7 @@ import game.model.shape.ShapeT;
 import game.model.shape.ShapeZ;
 
 import java.awt.Color;
+import java.util.LinkedList;
 
 /**
  * 统一管理方块的创建
@@ -16,14 +17,28 @@ import java.awt.Color;
  * 本类内部决定方块的生成顺序
  */
 public class ShapeFactory {
-
-	private String queue = "ITOFLSZ";
-	private int index = 0;
+	
+	/**
+	 * 枚举所有的形状
+	 */
+	private static final String ALL_SHAPES = "ITOFLSZ";
+	
+	/**
+	 * 存放方块实例的队列
+	 * 
+	 * 从该队列取得方块，并向外部提供
+	 * 
+	 * 如果队列为空，会自动填充足够的新的方块
+	 */
+	private LinkedList<Shape> queue;
+	
 	private ColorScheme cs;
 	
 	public ShapeFactory()
 	{
 		cs = new ColorScheme();
+		
+		queue = new LinkedList<Shape>();
 	}
 	
 	private Shape create(char type)
@@ -75,6 +90,30 @@ public class ShapeFactory {
 	}
 	
 	/**
+	 * 生成足够多的方块，放入队列
+	 */
+	private void genMoreShapes()
+	{
+		for (int i = 0; i < ALL_SHAPES.length(); i ++)
+		{
+			char type = ALL_SHAPES.charAt(i);
+			
+			Color fg = cs.getColor();
+			
+			Shape shape = create(type);
+			
+			shape.shapeIndex = 0;
+			
+			shape.setPos(3, 20);
+			
+			shape.setColor(fg);
+			
+			queue.add(shape);
+			cs.next();
+		}
+	}
+	
+	/**
 	 * 生成下一个方块
 	 * 
 	 * 需要给定方块的属性：
@@ -82,26 +121,11 @@ public class ShapeFactory {
 	 * 1. 形状
 	 * 2. 颜色
 	 */
-	public Shape genNext()
+	synchronized public Shape genNext()
 	{
-		char type = queue.charAt(index);
-		Color fg = cs.getColor();
+		if (queue.size() == 0)
+			genMoreShapes();
 		
-		Shape shape = create(type);
-		
-		shape.shapeIndex = 0;
-		
-		shape.setPos(3, 20);
-		
-		shape.setColor(fg);
-
-		// --
-		index ++;
-		if (index >= queue.length())
-			index = 0;
-		
-		cs.next();
-		
-		return shape;
+		return queue.poll();
 	}
 }
