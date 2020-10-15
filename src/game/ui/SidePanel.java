@@ -51,8 +51,9 @@ public class SidePanel extends JPanel {
 		int width = this.getWidth();
 		int height = this.getHeight();
 		
+		// set background color
+		g2.setBackground(TetrisConstants.COLOR_SIDE_BG);
 		g2.clearRect(0, 0, width, height);
-		g2.fillRect(0, 0, width, height);
 		
 		if (app == null)
 			return;
