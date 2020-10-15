@@ -18,7 +18,23 @@ import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Synthesizer;
 
+/**
+ * 背景音乐播放器
+ * 
+ * 只有一个播放器（如果有两个播放器
+ * 一同播放，会非常嘈杂）
+ */
 public class RealPlayer {
+	
+	private static RealPlayer inst;
+	
+	public static RealPlayer getInstance() {
+		
+		if (inst == null)
+			inst = new RealPlayer();
+		
+		return inst;
+	}
 	
 	
 	private class MetaProc implements MetaEventListener {
@@ -72,6 +88,8 @@ public class RealPlayer {
 	 * 放置歌曲列表
 	 */
 	private ArrayList<Sequence> list;
+	
+	private Sequence musicGameOver;
 
 	/**
 	 * 定序器（音序器）
@@ -82,7 +100,7 @@ public class RealPlayer {
 	
 	private Synthesizer synth;
 	
-	public RealPlayer()
+	private RealPlayer()
 	{
 		
 		try {
@@ -108,11 +126,13 @@ public class RealPlayer {
 		list = new ArrayList<Sequence>();
 		
 		try {
-			list.add(getSequence("min-g"));
 			list.add(getSequence("LetUsSwayTwinOars"));
 			list.add(new BanDal());
 			list.add(new LittleStar());
 			list.add(new Yimeng());
+			
+			// 结束音乐
+			musicGameOver = getSequence("min-g");
 		} catch (InvalidMidiDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -120,6 +140,7 @@ public class RealPlayer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		
 		// 默认加载第一首
 		loadMusic(list.get(0));
@@ -173,6 +194,15 @@ public class RealPlayer {
 			//ch.setMute(true);
 			ch.controlChange(7, val);
 		}
+	}
+	
+	/**
+	 * 游戏结束
+	 */
+	public void playGameOver()
+	{
+		loadMusic(musicGameOver);
+		play();
 	}
 	
 	public void play()

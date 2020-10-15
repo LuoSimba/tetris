@@ -33,8 +33,7 @@ public class Boot {
 		
 		win = Window.getInstance();
 		
-		RealPlayer player = new RealPlayer();
-		player.play();
+		RealPlayer.getInstance().play();
 	}
 
 	public static void main(String[] args)
@@ -50,7 +49,7 @@ public class Boot {
 			e.printStackTrace();
 		} catch (GameOverSignal e) {
 			// ”Œœ∑Ω· ¯
-			// do nothing
+			RealPlayer.getInstance().playGameOver();
 		}
 			
 		//App.dispose();
