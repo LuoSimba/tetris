@@ -2,6 +2,7 @@ package game.ui;
 
 
 import game.App;
+import game.config.TetrisConstants;
 import game.input.Keypad;
 import game.input.MouseMotion;
 
