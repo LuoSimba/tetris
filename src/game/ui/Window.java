@@ -39,9 +39,13 @@ public class Window extends JFrame {
 	private Window()
 	{
 		this.setTitle("俄罗斯方块");
+		// WindowConstants.DISPOSE_ON_CLOSE;
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.setResizable(false);
-		this.setBounds(500, 50, 200, 200);
+		
+		this.setSize(200, 200);
+		//this.setBounds(500, 50, 200, 200);
+		
 		this.enableInputMethods(false);
 		
 		// 创建一个透明的鼠标光标
@@ -60,6 +64,8 @@ public class Window extends JFrame {
 		this.add(new GamePanel());
 		this.add(new SidePanel(), BorderLayout.EAST);
 		this.pack();
+		// 使窗体居中
+		this.setLocationRelativeTo(null);
 		
 		this.addKeyListener(new Keypad());
 		this.addMouseMotionListener(new MouseMotion());

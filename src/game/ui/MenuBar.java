@@ -17,7 +17,11 @@ public class MenuBar extends JMenuBar {
 		public void actionPerformed(ActionEvent e) {
 			String command = e.getActionCommand();
 			
-			if (command == "退出")
+			if (command == "帮助")
+			{
+				new HelpDialog();
+			}
+			else if (command == "退出")
 			{
 				System.exit(0);
 			}
@@ -35,11 +39,18 @@ public class MenuBar extends JMenuBar {
 	{
 		JMenu menu = new JMenu("文件");
 		
-		JMenuItem item = new JMenuItem("退出");
+		CommandProc listener = new CommandProc();
 		
-		menu.add(item);
+		JMenuItem[] items = {
+				new JMenuItem("帮助"),
+				new JMenuItem("退出"),
+		};
 		
-		item.addActionListener(new CommandProc());
+		for (int i = 0; i < items.length; i ++)
+		{
+			items[i].addActionListener(listener);
+			menu.add(items[i]);
+		}
 		
 		this.add(menu);
 	}
