@@ -20,7 +20,7 @@ public class SidePanel extends JPanel {
 
 	public SidePanel()
 	{
-		size = new Dimension(200, 200);
+		size = new Dimension(150, 400);
 	}
 
 	@Override
