@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import game.config.TetrisConstants;
 import game.input.Tick;
 import game.model.Command;
+import game.model.EventQueue;
 import game.model.Page;
 import game.model.Shape;
 import game.model.ShapeFactory;
@@ -14,9 +15,13 @@ import game.model.Space;
 import game.model.Status;
 import game.signal.GameOverSignal;
 import game.sound.Pianist;
+import game.sound.RealPlayer;
 import game.ui.Window;
 
-public class App {
+/**
+ * 游戏实例在一个单独的线程运行
+ */
+public class App extends Thread {
 	
 	private Window      win;
 	private Space       space;
@@ -29,11 +34,11 @@ public class App {
 	private Pianist     pianist;
 	private Status      status;
 	private int         score;
+	private EventQueue  queue;
 	private Tick        tick;
 
 	public void dispose()
 	{
-		win.setApp(null);
 		win = null;
 	}
 	
@@ -52,6 +57,7 @@ public class App {
 		
 		space       = new Space();
 		factory     = new ShapeFactory();
+		queue       = new EventQueue();
 		tick        = new Tick(this);
 		
 		pianist     = new Pianist();
@@ -60,11 +66,6 @@ public class App {
 		shapePicImg = new Page(size * unit, size * unit);
 		nextShapePic = new Page(size * unit_s, size * unit_s);
 		genShape();
-		
-		// BUGFIX: 只有当实例完全初始化完成后，才能告知 UI 界面
-		// 如果一开始就关联到 Window， UI 在绘制方块时，可能报空指针异常，因为这时候实例可能
-		// 还来不及创建 Shape.
-		win.setApp(this);
 	}
 	
 	private void refreshUI()
@@ -93,7 +94,7 @@ public class App {
 		{
 			if (cmd == Command.RESUME)
 			{
-				resume();
+				resumeGame();
 			}
 		}
 		else if (status == Status.RUNNING)
@@ -116,7 +117,7 @@ public class App {
 				genShape();
 				break;
 			case PAUSE:
-				pause();
+				pauseGame();
 				break;
 			default: 
 				break;
@@ -129,7 +130,7 @@ public class App {
 	 * 
 	 * RUNNING -> PAUSE
 	 */
-	private void pause()
+	private void pauseGame()
 	{
 		if (status == Status.RUNNING) {
 			status = Status.PAUSE;
@@ -143,7 +144,7 @@ public class App {
 	 * 
 	 * PAUSE -> RUNNING
 	 */
-	private void resume()
+	private void resumeGame()
 	{
 		if (status == Status.PAUSE)
 		{
@@ -282,20 +283,6 @@ public class App {
 	}
 	
 	/**
-	 * 开始游戏
-	 * 
-	 * READY -> RUNNING
-	 */
-	synchronized public void gameStart()
-	{
-		if (status == Status.READY)
-		{
-			status = Status.RUNNING;
-			tick.start();
-		}
-	}
-	
-	/**
 	 * 游戏结束
 	 */
 	private void gameOver() throws GameOverSignal
@@ -305,6 +292,9 @@ public class App {
 		tick.stop();
 		
 		refreshUI();
+
+		// 播放结束音乐
+		RealPlayer.getInstance().playGameOver();
 		
 		throw new GameOverSignal();
 	}
@@ -396,6 +386,58 @@ public class App {
 			// 仅仅刷新界面
 			// 异常主要是用来通知外部的。
 			refreshUI();
+		}
+	}
+	
+	/**
+	 * 接收命令
+	 * 
+	 * 接收到的命令需要排队，依次等待执行
+	 */
+	public void putCommand(Command cmd)
+	{
+		// put 方法会一直等待
+		//queue.put(cmd);
+		//queue.add(cmd);
+
+		queue.offer(cmd);
+	}
+
+	/**
+	 * 开始游戏
+	 * 
+	 * READY -> RUNNING
+	 * 
+	 * @see java.lang.Thread#run()
+	 */
+	@Override
+	public void run() {
+		
+		if (status == Status.READY)
+		{
+			status = Status.RUNNING;
+			
+			tick.start();
+			
+			while (true)
+			{
+				try {
+					Command cmd = queue.take();
+					
+					if (isPaused() && cmd == Command.PAUSE)
+						cmd = Command.RESUME;
+					
+					play(cmd);
+					
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					
+					break;
+				} catch (GameOverSignal e) {
+					break;
+				}
+			}
 		}
 	}
 }

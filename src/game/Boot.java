@@ -8,8 +8,6 @@ import game.ui.Window;
 
 public class Boot {
 	
-	private static Window win;
-	
 	private static void init()
 	{
 		try {
@@ -28,18 +26,15 @@ public class Boot {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		win = Window.getInstance();
-		
-		RealPlayer.getInstance().play();
 	}
 
 	public static void main(String[] args)
 	{
 		init();
-		App app = new App(win);
-		Window.getInstance().play();
+		
+		Window.createWindow();
+		
+		RealPlayer.getInstance().play();
 	}
 }
 

@@ -24,9 +24,9 @@ public class HelpDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	
-	public HelpDialog()
+	public HelpDialog(Window win)
 	{
-		super(Window.getInstance(), "°ïÖú", true);
+		super(win, "°ïÖú", true);
 		
 		java.awt.Window owner = this.getOwner();
 
