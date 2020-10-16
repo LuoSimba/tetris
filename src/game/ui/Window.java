@@ -4,6 +4,10 @@ package game.ui;
 import game.App;
 import game.input.Keypad;
 import game.input.MouseMotion;
+import game.model.Command;
+import game.model.EventQueue;
+import game.signal.GameOverSignal;
+import game.sound.RealPlayer;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
@@ -17,6 +21,8 @@ import javax.swing.WindowConstants;
 
 /**
  * 窗口自己管理控件
+ * 
+ * 窗口负责接收输入
  */
 public class Window extends JFrame {
 
@@ -26,6 +32,7 @@ public class Window extends JFrame {
 	
 	private final Cursor cursor;
 	private boolean isCursorShow;
+	private EventQueue queue;
 	private App app;
 	
 	public static Window getInstance()
@@ -38,6 +45,8 @@ public class Window extends JFrame {
 	
 	private Window()
 	{
+		queue = new EventQueue();
+		
 		this.setTitle("俄罗斯方块");
 		// WindowConstants.DISPOSE_ON_CLOSE;
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -67,7 +76,7 @@ public class Window extends JFrame {
 		// 使窗体居中
 		this.setLocationRelativeTo(null);
 		
-		this.addKeyListener(new Keypad());
+		this.addKeyListener(new Keypad(this));
 		this.addMouseMotionListener(new MouseMotion());
 		this.setVisible(true);
 	}
@@ -101,5 +110,45 @@ public class Window extends JFrame {
 	public App getApp()
 	{
 		return app;
+	}
+	
+	/**
+	 * 保存一个命令
+	 */
+	public void putCommand(Command cmd)
+	{
+		// put 方法会一直等待
+		//queue.put(cmd);
+		//queue.add(cmd);
+		
+
+		queue.offer(cmd);
+	}
+	
+	public void play()
+	{
+		try {
+			app.gameStart();
+			
+			while (true)
+			{
+				Command cmd = queue.take();
+				
+				if (app.isPaused() && cmd == Command.PAUSE)
+					cmd = Command.RESUME;
+				
+				app.play(cmd);
+			}
+			
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (GameOverSignal e) {
+			
+			// 游戏结束
+			RealPlayer.getInstance().playGameOver();
+		}
+		
+		// App.dispose();
 	}
 }

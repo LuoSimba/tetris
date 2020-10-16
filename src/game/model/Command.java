@@ -11,6 +11,4 @@ public enum Command {
 	RESUME,
 	
 	NEXT_SHAPE,  // debug
-	
-	TEST;
 }

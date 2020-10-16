@@ -2,7 +2,6 @@ package game.input;
 
 import game.App;
 import game.model.Command;
-import game.model.EventQueue;
 import game.ui.Window;
 
 import java.awt.event.KeyEvent;
@@ -10,11 +9,16 @@ import java.awt.event.KeyListener;
 
 public class Keypad implements KeyListener {
 	
+	private Window win;
+	
+	public Keypad(Window win)
+	{
+		this.win = win;
+	}
+	
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int code = e.getKeyCode();
-		
-		Window win = Window.getInstance();
 
 		App app = win.getApp();
 		if (app == null)
@@ -25,17 +29,12 @@ public class Keypad implements KeyListener {
 
 		// 游戏实例正在运行
 		win.hideCursor();
-		EventQueue queue = app.getQueue();
 		
 		Command cmd = key2cmd(code);
 		
 		if (cmd != null)
 		{
-			// put 方法会一直等待
-			//queue.put(cmd);
-			//queue.add(cmd);
-			
-			queue.offer(cmd);
+			win.putCommand(cmd);
 		}
 	}
 	
@@ -60,10 +59,6 @@ public class Keypad implements KeyListener {
 			return Command.NEXT_SHAPE;
 		case KeyEvent.VK_P:
 			return Command.PAUSE;
-		case KeyEvent.VK_Q:
-			return Command.RESUME;
-		case KeyEvent.VK_F1:
-			return Command.TEST;
 		default:
 			return null;
 		}

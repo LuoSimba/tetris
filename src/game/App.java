@@ -7,11 +7,11 @@ import java.awt.image.BufferedImage;
 import game.config.TetrisConstants;
 import game.input.Tick;
 import game.model.Command;
-import game.model.EventQueue;
 import game.model.Page;
 import game.model.Shape;
 import game.model.ShapeFactory;
 import game.model.Space;
+import game.model.Status;
 import game.signal.GameOverSignal;
 import game.sound.Pianist;
 import game.ui.Window;
@@ -20,18 +20,16 @@ public class App {
 	
 	private Window      win;
 	private Space       space;
-	private EventQueue  queue;
 	private ShapeFactory factory;
 	private Shape       shape;
 	private Shape       nextShape;
 	private Page        shapePic;
 	private Page        shapePicImg;
 	private Page        nextShapePic;
-	private Tick        tick;
 	private Pianist     pianist;
-	private boolean     isPaused;
-	private boolean     isGameOver;
+	private Status      status;
 	private int         score;
+	private Tick        tick;
 
 	public void dispose()
 	{
@@ -39,7 +37,7 @@ public class App {
 		win = null;
 	}
 	
-	protected App(Window win)
+	public App(Window win)
 	{
 		this.win = win;
 		
@@ -48,12 +46,13 @@ public class App {
 		int size = TetrisConstants.MAX_SHAPE_SIZE;
 		
 		score    = 0;
-		isGameOver  = false;
 		
-		queue       = new EventQueue();
+		// 游戏初始状态
+		status = Status.READY;
+		
 		space       = new Space();
-		tick        = new Tick(this);
 		factory     = new ShapeFactory();
+		tick        = new Tick(this);
 		
 		pianist     = new Pianist();
 		
@@ -73,15 +72,32 @@ public class App {
 		win.repaint();
 	}
 	
-	protected void play() throws InterruptedException, GameOverSignal
+	/**
+	 * 处理游戏各种操作
+	 * 
+	 * 注意游戏当前的状态
+	 */
+	synchronized public void play(Command cmd) throws GameOverSignal
 	{
-		tick.start();
-		//isPaused = false;
+		// 如果游戏已经结束，则不再响应任何操作命令
+		if (status == Status.END)
+			throw new GameOverSignal();
 		
-		while (true)
+		// 如果游戏尚未开始，则不可操作
+		// 开始游戏需要单独调用 gameStart();
+		if (status == Status.READY)
+			return;
+		
+		// 暂停中，只能执行 RESUME
+		if (status == Status.PAUSE)
 		{
-			Command cmd = queue.take();
-			
+			if (cmd == Command.RESUME)
+			{
+				resume();
+			}
+		}
+		else if (status == Status.RUNNING)
+		{
 			switch (cmd)
 			{
 			case LEFT:
@@ -102,56 +118,49 @@ public class App {
 			case PAUSE:
 				pause();
 				break;
-			case RESUME:
-				resume();
-				break;
-			case TEST:
-				break;
 			default: 
-				System.out.println("Error: unknown Command");
-			break;
+				break;
 			}
 		}
 	}
 	
 	/**
-	 * 暂停游戏
+	 * 游戏暂停
+	 * 
+	 * RUNNING -> PAUSE
 	 */
 	private void pause()
 	{
-		if (!isPaused) {
-		
-			isPaused = true;
+		if (status == Status.RUNNING) {
+			status = Status.PAUSE;
 			tick.stop();
+			refreshUI();
 		}
-		
-		refreshUI();
 	}
 	
+	/**
+	 * 游戏继续
+	 * 
+	 * PAUSE -> RUNNING
+	 */
 	private void resume()
 	{
-		if (isPaused)
+		if (status == Status.PAUSE)
 		{
-			isPaused = false;
+			status = Status.RUNNING;
 			tick.start();
+			refreshUI();
 		}
-		
-		refreshUI();
 	}
 	
-	public boolean isPaused()
+	synchronized public boolean isPaused()
 	{
-		return isPaused;
+		return status == Status.PAUSE;
 	}
 	
-	public boolean isGameOver()
+	synchronized public boolean isGameOver()
 	{
-		return isGameOver;
-	}
-	
-	public EventQueue getQueue()
-	{
-		return queue;
+		return status == Status.END;
 	}
 	
 	/**
@@ -179,12 +188,12 @@ public class App {
 		refreshUI();
 	}
 	
-	public Shape currentShape()
+	synchronized public Shape currentShape()
 	{
 		return shape;
 	}
 	
-	public void moveShapeLeft()
+	private void moveShapeLeft()
 	{
 		shape.left();
 		
@@ -206,7 +215,7 @@ public class App {
 		shape.imageUp();
 	}
 	
-	public void moveShapeRight()
+	private void moveShapeRight()
 	{
 		shape.right();
 		
@@ -222,7 +231,7 @@ public class App {
 	 * 移动方块下落
 	 * @throws GameOverSignal 游戏结束
 	 */
-	public void moveShapeDown() throws GameOverSignal
+	private void moveShapeDown() throws GameOverSignal
 	{
 		shape.down();
 		
@@ -273,11 +282,25 @@ public class App {
 	}
 	
 	/**
+	 * 开始游戏
+	 * 
+	 * READY -> RUNNING
+	 */
+	synchronized public void gameStart()
+	{
+		if (status == Status.READY)
+		{
+			status = Status.RUNNING;
+			tick.start();
+		}
+	}
+	
+	/**
 	 * 游戏结束
 	 */
 	private void gameOver() throws GameOverSignal
 	{
-		isGameOver = true;
+		status = Status.END;
 		
 		tick.stop();
 		
@@ -312,22 +335,22 @@ public class App {
 		refreshUI();
 	}
 	
-	public BufferedImage snapshot()
+	synchronized public BufferedImage snapshot()
 	{
 		return space.getImage();
 	}
 	
-	public Page getShapePic()
+	synchronized public Page getShapePic()
 	{
 		return shapePic;
 	}
 	
-	public Page getShapePicImg()
+	synchronized public Page getShapePicImg()
 	{
 		return shapePicImg;
 	}
 	
-	public Page getNextShapePic()
+	synchronized public Page getNextShapePic()
 	{
 		return nextShapePic;
 	}
@@ -352,9 +375,28 @@ public class App {
 		g.dispose();
 	}
 	
-	public int getScore()
+	synchronized public int getScore()
 	{
 		return score;
+	}
+	
+	/**
+	 * 心跳
+	 * 
+	 * 心跳指示游戏时间前进
+	 */
+	public void beat()
+	{
+		try {
+			// 心跳转化为方块下落的动力
+			play(Command.DOWN);
+		} catch (GameOverSignal e) {
+			
+			// 自身收到游戏结束消息，
+			// 仅仅刷新界面
+			// 异常主要是用来通知外部的。
+			refreshUI();
+		}
 	}
 }
 

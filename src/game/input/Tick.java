@@ -1,17 +1,18 @@
 package game.input;
 
 import game.App;
-import game.model.Command;
-import game.model.EventQueue;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * 控制游戏的心跳
+ */
 public class Tick {
 	
-	private App app;
 	private Timer timer;
 	private TimerTask task;
+	private App app;
 	
 	public Tick(App app)
 	{
@@ -40,12 +41,7 @@ public class Tick {
 
 			@Override
 			public void run() {
-				
-				if (app.isGameOver())
-					return;
-				
-				EventQueue queue = app.getQueue();
-				queue.offer(Command.DOWN);
+				app.beat();
 			}
 		};
 		
