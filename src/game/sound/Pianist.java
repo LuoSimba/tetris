@@ -30,6 +30,21 @@ public class Pianist {
 	 */
 	private Sequencer seqr;
 	
+	public void dispose()
+	{
+		if (seqr.isRunning())
+		{
+			System.out.println("stop pianist.seqr ...");
+			seqr.stop();
+		}
+		
+		if (seqr.isOpen())
+		{
+			System.out.println("close pianist.seqr...");
+			seqr.close();
+		}
+	}
+	
 	public Pianist()
 	{
 		
@@ -97,6 +112,12 @@ public class Pianist {
 	
 	synchronized private void playMusic(Sequence seq)
 	{
+		if (!seqr.isOpen())
+		{
+			System.out.println("pianist.seqr is closed! cant play music");
+			return;
+		}
+		
 		try {
 			
 			seqr.setSequence(seq);

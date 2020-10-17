@@ -4,7 +4,6 @@ package game.ui;
 import game.App;
 import game.input.Keypad;
 import game.model.Command;
-import game.signal.GameOverSignal;
 import game.sound.RealPlayer;
 
 import java.awt.BorderLayout;
@@ -34,6 +33,8 @@ import javax.swing.WindowConstants;
  * 窗口负责处理鼠标移动事件
  * 
  * 窗口自定义关闭事件
+ * 
+ * 窗口控制背景音乐的开关
  */
 public class Window extends JFrame 
 implements ActionListener, MouseMotionListener, WindowListener {
@@ -50,6 +51,9 @@ implements ActionListener, MouseMotionListener, WindowListener {
 	 */
 	public static void createWindow()
 	{
+		if (set.isEmpty())
+			RealPlayer.getInstance().play();
+		
 		Window win = new Window();
 		set.add(win);
 	}
@@ -207,6 +211,8 @@ implements ActionListener, MouseMotionListener, WindowListener {
 		if (set.isEmpty())
 		{
 			System.out.println("No window exists. Exit program.");
+			
+			RealPlayer.getInstance().shutdown();
 			
 			// XXX force exit!
 			System.exit(0);

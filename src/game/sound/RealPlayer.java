@@ -24,7 +24,7 @@ import javax.sound.midi.Synthesizer;
  * 只有一个播放器（如果有两个播放器
  * 一同播放，会非常嘈杂）
  */
-public class RealPlayer {
+public class RealPlayer implements MetaEventListener, ControllerEventListener {
 	
 	private static RealPlayer inst;
 	
@@ -36,50 +36,43 @@ public class RealPlayer {
 		return inst;
 	}
 	
-	
-	private class MetaProc implements MetaEventListener {
+	@Override
+	public void meta(MetaMessage meta) {
 		
-		@Override
-		public void meta(MetaMessage meta) {
+		int type = meta.getType();
+		
+		if (type == 47)
+		{
+			//player.close();
 			
-			int type = meta.getType();
-			
-			if (type == 47)
-			{
-				//player.close();
-				
-				int i = Util.random(list.size());
-				loadMusic(list.get(i));
-				play();
-			}
-			else 
-			{
-				System.out.println("meta type " + type);
-			}
+			int i = Util.random(list.size());
+			loadMusic(list.get(i));
+			play();
+		}
+		else 
+		{
+			System.out.println("meta type " + type);
 		}
 	}
-	
-	private class CtrlProc implements ControllerEventListener {
 
-		@Override
-		public void controlChange(ShortMessage event) {
+	@Override
+	public void controlChange(ShortMessage event) {
+		
+		int cmd     = event.getCommand();
+		int channel = event.getChannel();
+		int data1   = event.getData1();
+		int data2   = event.getData2();
+		
+		// 不允许修改音量
+		if (cmd == ShortMessage.CONTROL_CHANGE && data1 == 7)
+		{
+			int volumn = ( data2 * 50 ) / 127;
 			
-			int cmd     = event.getCommand();
-			int channel = event.getChannel();
-			int data1   = event.getData1();
-			int data2   = event.getData2();
-			
-			// 不允许修改音量
-			if (cmd == ShortMessage.CONTROL_CHANGE && data1 == 7)
-			{
-				int volumn = ( data2 * 50 ) / 127;
-				
-				synth.getChannels()[channel].controlChange(7, volumn);
-			}
-			else 
-			{
-				System.out.println("cmd: " + cmd);
-			}
+			synth.getChannels()[channel].controlChange(7, volumn);
+		}
+		else 
+		{
+			System.out.println("cmd: " + cmd);
 		}
 	}
 	
@@ -100,6 +93,19 @@ public class RealPlayer {
 	
 	private Synthesizer synth;
 	
+	/**
+	 * 关闭背景音乐播放器，释放资源
+	 */
+	synchronized public void shutdown()
+	{
+		// 关闭音序器
+		if (player.isRunning())
+			player.stop();
+		
+		if (player.isOpen())
+			player.close();
+	}
+	
 	private RealPlayer()
 	{
 		
@@ -108,11 +114,10 @@ public class RealPlayer {
 			synth.open();
 			
 			player = MidiSystem.getSequencer(false);
-			player.addMetaEventListener(new MetaProc());
+			player.addMetaEventListener(this);
 			int[] ctls = { 7 };
-			player.addControllerEventListener(new CtrlProc(), ctls);
+			player.addControllerEventListener(this, ctls);
 			player.open();
-			// player.close();
 			//player.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
 			
 			// connect(player->synth)
@@ -155,15 +160,20 @@ public class RealPlayer {
 	{
 		URL url = this.getClass().getResource("res/" + resName + ".mid");
 		
-		Sequence seq = null;
-		
-		seq = MidiSystem.getSequence(url);
-		
-		return seq;
+		return MidiSystem.getSequence(url);
 	}
 	
-	private void loadMusic(Sequence song)
+	/**
+	 * 设置音序器播放的歌曲
+	 * 
+	 * 只能在音序器打开的情况下操作
+	 */
+	synchronized private void loadMusic(Sequence song)
 	{
+		// 如果音序器已经关闭，什么也不用做
+		if (!player.isOpen())
+			return;
+		
 		try {
 			player.setSequence(song);
 			player.setMicrosecondPosition(0);
@@ -199,16 +209,22 @@ public class RealPlayer {
 	/**
 	 * 游戏结束
 	 */
-	public void playGameOver()
+	synchronized public void playGameOver()
 	{
 		loadMusic(musicGameOver);
 		play();
 	}
 	
-	public void play()
+	/**
+	 * 开始播放
+	 */
+	synchronized public void play()
 	{
-		player.start();
-		
-		// player.isRunning();
+		// 如果音序器已经被关闭(close)，则不响应播放命令。
+		// 也不会报错
+		if (player.isOpen())
+		{
+			player.start();
+		}
 	}
 }

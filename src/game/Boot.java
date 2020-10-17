@@ -3,7 +3,6 @@ package game;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import game.sound.RealPlayer;
 import game.ui.Window;
 
 public class Boot {
@@ -33,8 +32,6 @@ public class Boot {
 		init();
 		
 		Window.createWindow();
-		
-		RealPlayer.getInstance().play();
 	}
 }
 

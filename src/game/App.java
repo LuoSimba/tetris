@@ -13,7 +13,6 @@ import game.model.Shape;
 import game.model.ShapeFactory;
 import game.model.Space;
 import game.model.Status;
-import game.signal.GameOverSignal;
 import game.sound.Pianist;
 import game.sound.RealPlayer;
 import game.ui.Window;
@@ -22,6 +21,16 @@ import game.ui.Window;
  * 游戏实例在一个单独的线程运行
  */
 public class App extends Thread {
+	
+	private class GameOverSig extends Exception 
+	{
+		private static final long serialVersionUID = 1L;
+	}
+	
+	/**
+	 * 游戏实例计数
+	 */
+	private static int count = 0;
 	
 	private Window      win;
 	private Space       space;
@@ -37,9 +46,19 @@ public class App extends Thread {
 	private EventQueue  queue;
 	private Tick        tick;
 
-	public void dispose()
+	/**
+	 * 清理游戏实例
+	 */
+	synchronized public void dispose()
 	{
 		win = null;
+		
+		pianist.dispose();
+		
+		if (this.isAlive())
+		{
+			System.out.println("app thread is still running ...");
+		}
 	}
 	
 	public App(Window win)
@@ -66,6 +85,9 @@ public class App extends Thread {
 		shapePicImg = new Page(size * unit, size * unit);
 		nextShapePic = new Page(size * unit_s, size * unit_s);
 		genShape();
+		
+		this.setName("app-" + count);
+		count ++;
 	}
 	
 	private void refreshUI()
@@ -77,12 +99,13 @@ public class App extends Thread {
 	 * 处理游戏各种操作
 	 * 
 	 * 注意游戏当前的状态
+	 * @throws GameOverSig 
 	 */
-	synchronized public void play(Command cmd) throws GameOverSignal
+	synchronized public void play(Command cmd) throws GameOverSig
 	{
 		// 如果游戏已经结束，则不再响应任何操作命令
 		if (status == Status.END)
-			throw new GameOverSignal();
+			throw new GameOverSig();
 		
 		// 如果游戏尚未开始，则不可操作
 		// 开始游戏需要单独调用 gameStart();
@@ -230,9 +253,9 @@ public class App extends Thread {
 	
 	/**
 	 * 移动方块下落
-	 * @throws GameOverSignal 游戏结束
+	 * @throws GameOverSig 
 	 */
-	private void moveShapeDown() throws GameOverSignal
+	private void moveShapeDown() throws GameOverSig
 	{
 		shape.down();
 		
@@ -284,8 +307,9 @@ public class App extends Thread {
 	
 	/**
 	 * 游戏结束
+	 * @throws GameOverSig 
 	 */
-	private void gameOver() throws GameOverSignal
+	private void gameOver() throws GameOverSig
 	{
 		status = Status.END;
 		
@@ -296,7 +320,7 @@ public class App extends Thread {
 		// 播放结束音乐
 		RealPlayer.getInstance().playGameOver();
 		
-		throw new GameOverSignal();
+		throw new GameOverSig();
 	}
 	
 	private void rotateShape()
@@ -377,16 +401,8 @@ public class App extends Thread {
 	 */
 	public void beat()
 	{
-		try {
-			// 心跳转化为方块下落的动力
-			play(Command.DOWN);
-		} catch (GameOverSignal e) {
-			
-			// 自身收到游戏结束消息，
-			// 仅仅刷新界面
-			// 异常主要是用来通知外部的。
-			refreshUI();
-		}
+		// 心跳转化为方块下落的动力
+		queue.offer(Command.DOWN);
 	}
 	
 	/**
@@ -413,32 +429,38 @@ public class App extends Thread {
 	@Override
 	public void run() {
 		
-		if (status == Status.READY)
-		{
-			status = Status.RUNNING;
-			
-			tick.start();
-			
+		// 如果当前不是就绪状态，立即返回什么也不用做
+		if (status != Status.READY)
+			return;
+		
+		System.out.println("App begin running ....");
+		String str = Thread.currentThread().getName();
+		System.out.println("Thread name is : " + str);
+		
+		
+		status = Status.RUNNING;
+		
+		tick.start();
+		
+		
+		try {
 			while (true)
 			{
-				try {
-					Command cmd = queue.take();
-					
-					if (isPaused() && cmd == Command.PAUSE)
-						cmd = Command.RESUME;
-					
-					play(cmd);
-					
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					
-					break;
-				} catch (GameOverSignal e) {
-					break;
-				}
+				Command cmd = queue.take();
+				
+				if (isPaused() && cmd == Command.PAUSE)
+					cmd = Command.RESUME;
+				
+				play(cmd);
 			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (GameOverSig e) {
+			System.out.println("catch signal: GameOver");
 		}
+		
+		System.out.println("Thread " + Thread.currentThread().getName() + " reaches END!");
 	}
 }
 
