@@ -42,6 +42,9 @@ public class GamePanel extends JPanel {
 		return null;
 	}
 
+	/**
+	 * 面板的绘制是由 AWT-EventQueue-0 线程直接执行的
+	 */
 	@Override
 	protected void paintComponent(Graphics g) {
 		

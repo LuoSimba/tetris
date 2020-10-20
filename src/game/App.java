@@ -90,9 +90,18 @@ public class App extends Thread {
 		count ++;
 	}
 	
+	/**
+	 * 重绘界面
+	 * 
+	 * 在执行 dispose() 之后，游戏实例与界面解除绑定，
+	 * 所以重绘界面时需要检查窗口是否存在
+	 */
 	private void refreshUI()
 	{
-		win.repaint();
+		if (win != null)
+		{
+			win.repaint();
+		}
 	}
 	
 	/**

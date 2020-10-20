@@ -38,27 +38,36 @@ public class SidePanel extends JPanel {
 		return null;
 	}
 
+	/**
+	 * 绘制边栏
+	 * 
+	 * 由 AWT-EventQueue-0 直接执行
+	 */
 	@Override
 	protected void paintComponent(Graphics g) {
-		
-		Window win = getWindow();
-		if (win == null)
-			return;
-		
-		App app = win.getApp();
 		
 		Graphics2D g2 = (Graphics2D) g;
 		int width = this.getWidth();
 		int height = this.getHeight();
 		
+		
+		// 绘制背景色
 		// set background color
 		g2.setBackground(TetrisConstants.COLOR_SIDE_BG);
 		g2.clearRect(0, 0, width, height);
 		
+		
+		// 获取窗口
+		// 如果没有添加到窗口中，则不再继续绘制
+		Window win = getWindow();
+		if (win == null)
+			return;
+
+		// 获取游戏实例
+		// 如果没有游戏实例，也不需要继续绘制
+		App app = win.getApp();
 		if (app == null)
 			return;
-		
-		
 		
 		
 		Shape shape = app.currentShape();

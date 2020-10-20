@@ -26,19 +26,23 @@ import javax.swing.WindowConstants;
 /**
  * 窗口自己管理控件
  * 
+ * ==========================================================
+ * 
+ * 以下事件的监听全部由 AWT-EventQueue-0 线程来执行：
+ * 
  * 窗口负责接收输入
+ *  Keypad
  * 
  * 窗口负责处理菜单命令 
  *  ActionListener.actionPerformed(ActionEvent e); 
- *  (AWT-EventQueue-0)
  * 
  * 窗口负责处理鼠标移动事件
  *  MouseMotionListener.mouseMoved(MouseEvent);
- *  (AWT-EventQueue-0)
  * 
  * 窗口自定义关闭事件
  *  WindowListener.windowClosed(WindowEvent e);
- *  (AWT-EventQueue-0)
+ *  
+ * ==========================================================
  * 
  * 窗口控制背景音乐的开关
  */
@@ -93,7 +97,8 @@ implements ActionListener, MouseMotionListener, WindowListener {
 		isCursorShow = true;
 		
 		// set up the menu bar.
-		this.setJMenuBar(new MenuBar(this));
+		MenuBar mb = new MenuBar(this);
+		this.setJMenuBar(mb);
 		
 		this.add(new GamePanel());
 		this.add(new SidePanel(), BorderLayout.EAST);
