@@ -28,11 +28,17 @@ import javax.swing.WindowConstants;
  * 
  * 窗口负责接收输入
  * 
- * 窗口负责处理菜单命令
+ * 窗口负责处理菜单命令 
+ *  ActionListener.actionPerformed(ActionEvent e); 
+ *  (AWT-EventQueue-0)
  * 
  * 窗口负责处理鼠标移动事件
+ *  MouseMotionListener.mouseMoved(MouseEvent);
+ *  (AWT-EventQueue-0)
  * 
  * 窗口自定义关闭事件
+ *  WindowListener.windowClosed(WindowEvent e);
+ *  (AWT-EventQueue-0)
  * 
  * 窗口控制背景音乐的开关
  */
@@ -156,9 +162,6 @@ implements ActionListener, MouseMotionListener, WindowListener {
 		}
 	}
 	
-	/**
-	 * ActionListener method
-	 */
 	@Override 
 	synchronized public void actionPerformed(ActionEvent e)
 	{
