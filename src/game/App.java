@@ -8,6 +8,7 @@ import game.config.TetrisConstants;
 import game.input.Tick;
 import game.model.Command;
 import game.model.EventQueue;
+import game.model.MusicEvent;
 import game.model.Page;
 import game.model.Shape;
 import game.model.ShapeFactory;
@@ -327,7 +328,7 @@ public class App extends Thread {
 		refreshUI();
 
 		// ≤•∑≈Ω· ¯“Ù¿÷
-		RealPlayer.getInstance().playGameOver();
+		RealPlayer.execute(MusicEvent.GAME_OVER);
 		
 		throw new GameOverSig();
 	}

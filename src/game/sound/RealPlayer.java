@@ -1,5 +1,6 @@
 package game.sound;
 
+import game.model.MusicEvent;
 import game.model.Util;
 
 import java.io.IOException;
@@ -28,13 +29,52 @@ public class RealPlayer implements MetaEventListener, ControllerEventListener {
 	
 	private static RealPlayer inst;
 	
-	public static RealPlayer getInstance() {
-		
-		if (inst == null)
-			inst = new RealPlayer();
-		
-		return inst;
+	/**
+	 * 打开播放器
+	 */
+	synchronized public static void open()
+	{
+		try {
+			if (inst == null) {
+				inst = new RealPlayer();
+				
+				inst.play();
+			}
+		} catch (MidiUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidMidiDataException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
+	
+	
+	synchronized public static void execute(MusicEvent e)
+	{
+		if (inst == null)
+			return;
+		
+		if (e == MusicEvent.GAME_OVER)
+			inst.playGameOver();
+	}
+	
+	/**
+	 * 关闭背景音乐播放器，释放资源
+	 */
+	synchronized public static void close()
+	{
+		if (inst != null)
+		{
+			inst.shutdown();
+			inst = null;
+		}
+	}
+	
+	// ============================================
 	
 	@Override
 	public void meta(MetaMessage meta) {
@@ -77,6 +117,8 @@ public class RealPlayer implements MetaEventListener, ControllerEventListener {
 	}
 	
 	
+	// ===========================================
+	
 	/**
 	 * 放置歌曲列表
 	 */
@@ -93,10 +135,7 @@ public class RealPlayer implements MetaEventListener, ControllerEventListener {
 	
 	private Synthesizer synth;
 	
-	/**
-	 * 关闭背景音乐播放器，释放资源
-	 */
-	synchronized public void shutdown()
+	private void shutdown()
 	{
 		// 关闭音序器
 		if (player.isRunning())
@@ -104,50 +143,40 @@ public class RealPlayer implements MetaEventListener, ControllerEventListener {
 		
 		if (player.isOpen())
 			player.close();
+		
+		// 关闭合成器
+		if (synth.isOpen())
+			synth.close();
 	}
 	
-	private RealPlayer()
+	private RealPlayer() throws MidiUnavailableException, InvalidMidiDataException, IOException
 	{
+		// 1. 合成器
+		synth = MidiSystem.getSynthesizer();
+		synth.open();
 		
-		try {
-			synth = MidiSystem.getSynthesizer();
-			synth.open();
-			
-			player = MidiSystem.getSequencer(false);
-			player.addMetaEventListener(this);
-			int[] ctls = { 7 };
-			player.addControllerEventListener(this, ctls);
-			player.open();
-			//player.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
-			
-			// connect(player->synth)
-			player.getTransmitter().setReceiver(synth.getReceiver());
-		} catch (MidiUnavailableException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// 2. 音序器
+		player = MidiSystem.getSequencer(false);
+		player.addMetaEventListener(this);
+		int[] ctls = { 7 };
+		player.addControllerEventListener(this, ctls);
+		player.open();
+		//player.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
 		
-		// 初始化歌曲列表
+		// 3. 连接音序器与合成器
+		player.getTransmitter().setReceiver(synth.getReceiver());
+		
+		// 4. 载入歌曲列表
 		list = new ArrayList<Sequence>();
-		
-		try {
-			list.add(getSequence("LetUsSwayTwinOars"));
-			list.add(new BanDal());
-			list.add(new LittleStar());
-			list.add(new Yimeng());
-			
-			// 结束音乐
-			musicGameOver = getSequence("min-g");
-		} catch (InvalidMidiDataException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		list.add(getSequence("LetUsSwayTwinOars"));
+		list.add(new BanDal());
+		list.add(new LittleStar());
+		list.add(new Yimeng());
+		// 结束音乐
+		musicGameOver = getSequence("min-g");
 		
 		
-		// 默认加载第一首
+		// 5. 默认加载第一首
 		loadMusic(list.get(0));
 	}
 	
@@ -168,7 +197,7 @@ public class RealPlayer implements MetaEventListener, ControllerEventListener {
 	 * 
 	 * 只能在音序器打开的情况下操作
 	 */
-	synchronized private void loadMusic(Sequence song)
+	private void loadMusic(Sequence song)
 	{
 		// 如果音序器已经关闭，什么也不用做
 		if (!player.isOpen())
@@ -209,7 +238,7 @@ public class RealPlayer implements MetaEventListener, ControllerEventListener {
 	/**
 	 * 游戏结束
 	 */
-	synchronized public void playGameOver()
+	private void playGameOver()
 	{
 		loadMusic(musicGameOver);
 		play();
@@ -218,13 +247,8 @@ public class RealPlayer implements MetaEventListener, ControllerEventListener {
 	/**
 	 * 开始播放
 	 */
-	synchronized public void play()
+	private void play()
 	{
-		// 如果音序器已经被关闭(close)，则不响应播放命令。
-		// 也不会报错
-		if (player.isOpen())
-		{
-			player.start();
-		}
+		player.start();
 	}
 }

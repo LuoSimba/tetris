@@ -63,14 +63,6 @@ implements ActionListener, MouseMotionListener, WindowListener {
 			
 			int code = e.getKeyCode();
 			
-			App app = Window.this.getApp();
-			
-			if (app == null)
-				return;
-			
-			if (app.isGameOver())
-				return;
-			
 			Command cmd = key2cmd(code);
 			
 			if (cmd != null)
@@ -131,9 +123,6 @@ implements ActionListener, MouseMotionListener, WindowListener {
 	 */
 	public static void createWindow()
 	{
-		if (set.isEmpty())
-			RealPlayer.getInstance().play();
-		
 		Window win = new Window();
 		set.add(win);
 	}
@@ -231,10 +220,13 @@ implements ActionListener, MouseMotionListener, WindowListener {
 	 */
 	public void putCommand(Command cmd)
 	{
-		if (app != null)
-		{
-			app.putCommand(cmd);
-		}
+		if (app == null)
+			return;
+		
+		if (app.isGameOver())
+			return;
+
+		app.putCommand(cmd);
 	}
 	
 	@Override 
@@ -290,9 +282,9 @@ implements ActionListener, MouseMotionListener, WindowListener {
 		{
 			System.out.println("No window exists. Exit program.");
 			
-			RealPlayer.getInstance().shutdown();
+			// º«µ√πÿ±’±≥æ∞“Ù¿÷
+			RealPlayer.close();
 			
-			// XXX force exit!
 			System.exit(0);
 		}
 	}
