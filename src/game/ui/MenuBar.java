@@ -45,6 +45,7 @@ public class MenuBar extends JMenuBar {
 		JMenu menu = new JMenu("文件");
 		
 		JMenuItem[] items = {
+				new JMenuItem("结束游戏"),
 				new JMenuItem("新游戏"),
 				new JMenuItem("帮助"),
 				new JMenuItem("退出"),

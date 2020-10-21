@@ -193,17 +193,25 @@ implements ActionListener, MouseMotionListener, WindowListener {
 	}
 	
 	/**
-	 * 创建一个新的游戏实例
-	 * 
-	 * 自动丢弃旧的游戏
+	 * 清理当前的游戏实例
 	 */
-	private void createNewGame()
+	private void killGame()
 	{
-		// 自动清理旧数据
 		if (this.app != null)
 		{
 			this.app.dispose();
+			this.app = null;
 		}
+	}
+	
+	/**
+	 * 创建一个新的游戏实例
+	 * 
+	 * 自动清理已存在的游戏实例
+	 */
+	private void createNewGame()
+	{
+		killGame();
 		
 		this.app = new App(this);
 		// 立即开始运行
@@ -234,7 +242,13 @@ implements ActionListener, MouseMotionListener, WindowListener {
 	{
 		String command = e.getActionCommand();
 		
-		if (command == "新游戏")
+		if (command == "结束游戏")
+		{
+			killGame();
+			
+			this.repaint();
+		}
+		else if (command == "新游戏")
 		{
 			createNewGame();
 		}

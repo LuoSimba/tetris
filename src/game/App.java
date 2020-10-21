@@ -3,9 +3,10 @@ package game;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import game.config.TetrisConstants;
-import game.input.Tick;
 import game.model.Command;
 import game.model.EventQueue;
 import game.model.MusicEvent;
@@ -23,15 +24,67 @@ import game.ui.Window;
  */
 public class App extends Thread {
 	
+	/**
+	 * 游戏结束信号
+	 */
 	private class GameOverSig extends Exception 
 	{
 		private static final long serialVersionUID = 1L;
 	}
 	
 	/**
+	 * 心跳
+	 * 
+	 * 心跳驱动游戏时间前进
+	 */
+	private class HeartBeat extends TimerTask {
+		
+		@Override
+		public void run()
+		{
+			// 心跳转化为方块下落的动力
+			App.this.queue.offer(Command.DOWN);
+		}
+	}
+	
+	/**
+	 * 控制游戏心跳
+	 */
+	private class Tick2 {
+		
+		private Timer timer;
+		private HeartBeat task;
+		
+		public void stop()
+		{
+			if (timer == null)
+				return;
+			
+			timer.cancel();
+			timer = null;
+			
+			task.cancel();
+			task = null;
+		}
+		
+		public void start()
+		{
+			if (timer != null)
+				stop();
+			
+			timer = new Timer();
+			task = new HeartBeat();
+			timer.schedule(task, 2000, 1000);
+		}
+	}
+	
+	/**
 	 * 游戏实例计数
 	 */
 	private static int count = 0;
+	
+	
+	
 	
 	private Window      win;
 	private Space       space;
@@ -45,7 +98,7 @@ public class App extends Thread {
 	private Status      status;
 	private int         score;
 	private EventQueue  queue;
-	private Tick        tick;
+	private Tick2       tick2;
 
 	/**
 	 * 清理游戏实例
@@ -58,7 +111,14 @@ public class App extends Thread {
 		
 		if (this.isAlive())
 		{
-			System.out.println("app thread is still running ...");
+			try {
+				// 必须放入队伍中, 不能丢失, 
+				// 否则游戏实例无法停止
+				queue.put(Command.KILL);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -78,7 +138,7 @@ public class App extends Thread {
 		space       = new Space();
 		factory     = new ShapeFactory();
 		queue       = new EventQueue();
-		tick        = new Tick(this);
+		tick2       = new Tick2();
 		
 		pianist     = new Pianist();
 		
@@ -109,9 +169,10 @@ public class App extends Thread {
 	 * 处理游戏各种操作
 	 * 
 	 * 注意游戏当前的状态
+	 * 
 	 * @throws GameOverSig 
 	 */
-	synchronized public void play(Command cmd) throws GameOverSig
+	private void play(Command cmd) throws GameOverSig
 	{
 		// 如果游戏已经结束，则不再响应任何操作命令
 		if (status == Status.END)
@@ -167,7 +228,7 @@ public class App extends Thread {
 	{
 		if (status == Status.RUNNING) {
 			status = Status.PAUSE;
-			tick.stop();
+			tick2.stop();
 			refreshUI();
 		}
 	}
@@ -182,7 +243,7 @@ public class App extends Thread {
 		if (status == Status.PAUSE)
 		{
 			status = Status.RUNNING;
-			tick.start();
+			tick2.start();
 			refreshUI();
 		}
 	}
@@ -323,7 +384,7 @@ public class App extends Thread {
 	{
 		status = Status.END;
 		
-		tick.stop();
+		tick2.stop();
 		
 		refreshUI();
 
@@ -405,20 +466,12 @@ public class App extends Thread {
 	}
 	
 	/**
-	 * 心跳
-	 * 
-	 * 心跳指示游戏时间前进
-	 */
-	public void beat()
-	{
-		// 心跳转化为方块下落的动力
-		queue.offer(Command.DOWN);
-	}
-	
-	/**
 	 * 接收命令
 	 * 
 	 * 接收到的命令需要排队，依次等待执行
+	 * 
+	 * 游戏开始后才能接收命令, 不然命令会一直在队伍中
+	 * 堆积, 而没有线程来处理
 	 */
 	public void putCommand(Command cmd)
 	{
@@ -426,7 +479,10 @@ public class App extends Thread {
 		//queue.put(cmd);
 		//queue.add(cmd);
 
-		queue.offer(cmd);
+		if (this.isAlive())
+		{
+			queue.offer(cmd);
+		}
 	}
 
 	/**
@@ -450,13 +506,17 @@ public class App extends Thread {
 		
 		status = Status.RUNNING;
 		
-		tick.start();
+		tick2.start();
 		
 		
 		try {
 			while (true)
 			{
 				Command cmd = queue.take();
+				
+				// 优先处理 KILL 命令
+				if (cmd == Command.KILL)
+					break;
 				
 				if (isPaused() && cmd == Command.PAUSE)
 					cmd = Command.RESUME;
@@ -471,6 +531,14 @@ public class App extends Thread {
 		}
 		
 		System.out.println("Thread " + Thread.currentThread().getName() + " reaches END!");
+		
+		// 游戏结束 - 清理一部分资源
+		
+		// 不解除与 win 的绑定. 
+		// 游戏结束界面仍然可以在窗口显示
+		
+		// 停止定时器
+		tick2.stop();
 	}
 }
 
