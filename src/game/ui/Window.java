@@ -2,7 +2,6 @@ package game.ui;
 
 
 import game.App;
-import game.input.Keypad;
 import game.model.Command;
 import game.sound.RealPlayer;
 
@@ -13,6 +12,8 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
@@ -48,6 +49,75 @@ import javax.swing.WindowConstants;
  */
 public class Window extends JFrame 
 implements ActionListener, MouseMotionListener, WindowListener {
+	
+	/**
+	 * 处理按键
+	 */
+	private class Keypad implements KeyListener {
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			
+			// 发生按键时隐藏鼠标
+			Window.this.hideCursor();
+			
+			int code = e.getKeyCode();
+			
+			App app = Window.this.getApp();
+			
+			if (app == null)
+				return;
+			
+			if (app.isGameOver())
+				return;
+			
+			Command cmd = key2cmd(code);
+			
+			if (cmd != null)
+			{
+				Window.this.putCommand(cmd);
+			}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+			// TODO Auto-generated method stub
+		}
+		
+		/**
+		 * 将按键转换成命令
+		 * 
+		 * 如果没有对应的命令，则返回 null
+		 */
+		private Command key2cmd(int keyCode)
+		{
+			switch (keyCode)
+			{
+			case KeyEvent.VK_RIGHT:
+				return Command.RIGHT;
+			case KeyEvent.VK_LEFT:
+				return Command.LEFT;
+			case KeyEvent.VK_UP:
+				return Command.ROTATE;
+			case KeyEvent.VK_DOWN:
+				return Command.DOWN;
+			case KeyEvent.VK_SPACE:
+				return Command.NEXT_SHAPE;
+			case KeyEvent.VK_P:
+				return Command.PAUSE;
+			default:
+				return null;
+			}
+		}
+
+	}
+	
+	
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -106,7 +176,7 @@ implements ActionListener, MouseMotionListener, WindowListener {
 		// 使窗体居中
 		this.setLocationRelativeTo(null);
 		
-		this.addKeyListener(new Keypad(this));
+		this.addKeyListener(new Keypad());
 		this.addMouseMotionListener(this);
 		this.addWindowListener(this);
 		this.setVisible(true);
