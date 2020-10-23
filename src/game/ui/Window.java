@@ -3,6 +3,7 @@ package game.ui;
 
 import game.App;
 import game.model.Command;
+import game.model.Task;
 import game.sound.RealPlayer;
 
 import java.awt.BorderLayout;
@@ -296,6 +297,9 @@ implements ActionListener, MouseMotionListener, WindowListener {
 		{
 			// 记得关闭背景音乐
 			RealPlayer.close();
+			
+			// 和定时器服务
+			Task.close();
 			
 			System.exit(0);
 		}

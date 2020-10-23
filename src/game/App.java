@@ -3,7 +3,6 @@ package game;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.util.TimerTask;
 import java.util.concurrent.ScheduledFuture;
 
 import game.config.TetrisConstants;
