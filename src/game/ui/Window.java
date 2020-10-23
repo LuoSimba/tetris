@@ -294,8 +294,6 @@ implements ActionListener, MouseMotionListener, WindowListener {
 		
 		if (set.isEmpty())
 		{
-			System.out.println("No window exists. Exit program.");
-			
 			// º«µ√πÿ±’±≥æ∞“Ù¿÷
 			RealPlayer.close();
 			

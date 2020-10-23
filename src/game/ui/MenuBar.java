@@ -45,17 +45,18 @@ public class MenuBar extends JMenuBar {
 		JMenu menu = new JMenu("文件");
 		
 		JMenuItem[] items = {
-				new JMenuItem("结束游戏"),
 				new JMenuItem("新游戏"),
+				new JMenuItem("结束游戏"),
+		};
+		patchAdd(menu, items, listener);
+
+		menu.addSeparator();
+		
+		JMenuItem[] items2 = {
 				new JMenuItem("帮助"),
 				new JMenuItem("退出"),
 		};
-		
-		for (int i = 0; i < items.length; i ++)
-		{
-			items[i].addActionListener(listener);
-			menu.add(items[i]);
-		}
+		patchAdd(menu, items2, listener);
 		
 		this.add(menu);
 		
@@ -75,13 +76,17 @@ public class MenuBar extends JMenuBar {
 				new JMenuItem("打开"),
 				new JMenuItem("关闭"),
 		};
+		patchAdd(menu, items, al);
 		
+		this.add(menu);
+	}
+	
+	private void patchAdd(JMenu menu, JMenuItem[] items, ActionListener al)
+	{
 		for (int i = 0; i < items.length; i ++)
 		{
 			items[i].addActionListener(al);
 			menu.add(items[i]);
 		}
-		
-		this.add(menu);
 	}
 }

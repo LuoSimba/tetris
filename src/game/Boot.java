@@ -3,6 +3,7 @@ package game;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import game.model.Task;
 import game.ui.Window;
 
 public class Boot {
@@ -25,6 +26,8 @@ public class Boot {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		Task.open();
 	}
 
 	public static void main(String[] args)

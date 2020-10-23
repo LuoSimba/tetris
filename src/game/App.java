@@ -3,8 +3,8 @@ package game;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ScheduledFuture;
 
 import game.config.TetrisConstants;
 import game.model.Command;
@@ -15,6 +15,7 @@ import game.model.Shape;
 import game.model.ShapeFactory;
 import game.model.Space;
 import game.model.Status;
+import game.model.Task;
 import game.sound.Pianist;
 import game.sound.RealPlayer;
 import game.ui.Window;
@@ -52,29 +53,28 @@ public class App extends Thread {
 	 */
 	private class Tick2 {
 		
-		private Timer timer;
 		private HeartBeat task;
+		private ScheduledFuture<?> future;
 		
 		public void stop()
 		{
-			if (timer == null)
-				return;
-			
-			timer.cancel();
-			timer = null;
-			
-			task.cancel();
-			task = null;
+			if (future != null)
+			{
+				future.cancel(true);
+				future = null;
+				
+				task.cancel();
+				task = null;
+			}
 		}
 		
 		public void start()
 		{
-			if (timer != null)
+			if (future != null)
 				stop();
 			
-			timer = new Timer();
 			task = new HeartBeat();
-			timer.schedule(task, 2000, 1000);
+			future = Task.addTick(task);
 		}
 	}
 	
@@ -499,15 +499,9 @@ public class App extends Thread {
 		if (status != Status.READY)
 			return;
 		
-		System.out.println("App begin running ....");
-		String str = Thread.currentThread().getName();
-		System.out.println("Thread name is : " + str);
-		
 		
 		status = Status.RUNNING;
-		
 		tick2.start();
-		
 		
 		try {
 			while (true)
@@ -530,9 +524,9 @@ public class App extends Thread {
 			System.out.println("catch signal: GameOver");
 		}
 		
-		System.out.println("Thread " + Thread.currentThread().getName() + " reaches END!");
-		
+		// ================================
 		// 游戏结束 - 清理一部分资源
+		// ================================
 		
 		// 不解除与 win 的绑定. 
 		// 游戏结束界面仍然可以在窗口显示
