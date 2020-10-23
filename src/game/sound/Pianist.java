@@ -106,47 +106,26 @@ public class Pianist {
 	
 	public void ding2()
 	{
-		int C = 84;
-		int G = 91;
+		int D = 86;
 		
-		ch2.noteOn(C, 100);
-		ch2.noteOn(G, 100);
-		
-		ch2.noteOff(C, 100);
-		ch2.noteOff(G, 100);
+		ch2.noteOn(D, 100);
+		ch2.noteOff(D, 100);
 	}
 	
 	public void ding3()
 	{
-		int C = 84;
-		int G = 91;
-		int CC = 96;
+		int E = 88;
 		
-		ch2.noteOn(C, 100);
-		ch2.noteOn(G, 100);
-		ch2.noteOn(CC, 100);
-		
-		ch2.noteOff(C, 100);
-		ch2.noteOff(G, 100);
-		ch2.noteOff(CC, 100);
+		ch2.noteOn(E, 100);
+		ch2.noteOff(E, 100);
 	}
 	
 	public void ding4()
 	{
-		int C = 84;
-		int E = 88;
 		int G = 91;
-		int CC = 96;
 		
-		ch2.noteOn(C, 100);
-		ch2.noteOn(E, 100);
 		ch2.noteOn(G, 100);
-		ch2.noteOn(CC, 100);
-		
-		ch2.noteOff(C, 100);
-		ch2.noteOff(E, 100);
 		ch2.noteOff(G, 100);
-		ch2.noteOff(CC, 100);
 	}
 	
 	synchronized private void playMusic(Sequence seq)
