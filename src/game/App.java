@@ -38,7 +38,7 @@ public class App extends Thread {
 	 * 
 	 * 心跳驱动游戏时间前进
 	 */
-	private class HeartBeat extends TimerTask {
+	private class HeartBeat implements Runnable {
 		
 		@Override
 		public void run()
@@ -48,35 +48,8 @@ public class App extends Thread {
 		}
 	}
 	
-	/**
-	 * 控制游戏心跳
-	 */
-	private class Tick2 {
 		
-		private HeartBeat task;
-		private ScheduledFuture<?> future;
-		
-		public void stop()
-		{
-			if (future != null)
-			{
-				future.cancel(true);
-				future = null;
-				
-				task.cancel();
-				task = null;
-			}
-		}
-		
-		public void start()
-		{
-			if (future != null)
-				stop();
-			
-			task = new HeartBeat();
-			future = Task.addTick(task);
-		}
-	}
+
 	
 	/**
 	 * 游戏实例计数
@@ -98,7 +71,9 @@ public class App extends Thread {
 	private Status      status;
 	private int         score;
 	private EventQueue  queue;
-	private Tick2       tick2;
+	private HeartBeat   task2;
+	private ScheduledFuture<?> future;
+
 
 	/**
 	 * 清理游戏实例
@@ -138,7 +113,8 @@ public class App extends Thread {
 		space       = new Space();
 		factory     = new ShapeFactory();
 		queue       = new EventQueue();
-		tick2       = new Tick2();
+		task2       = new HeartBeat();
+		future      = null;
 		
 		pianist     = new Pianist();
 		
@@ -220,6 +196,29 @@ public class App extends Thread {
 	}
 	
 	/**
+	 * 开始计时
+	 */
+	private void startTick()
+	{
+		if (future == null)
+		{
+			future = Task.addTick(task2);
+		}
+	}
+	
+	/**
+	 * 停止计时
+	 */
+	private void stopTick()
+	{
+		if (future != null)
+		{
+			future.cancel(true);
+			future = null;
+		}
+	}
+	
+	/**
 	 * 游戏暂停
 	 * 
 	 * RUNNING -> PAUSE
@@ -228,7 +227,7 @@ public class App extends Thread {
 	{
 		if (status == Status.RUNNING) {
 			status = Status.PAUSE;
-			tick2.stop();
+			stopTick();
 			refreshUI();
 		}
 	}
@@ -243,7 +242,7 @@ public class App extends Thread {
 		if (status == Status.PAUSE)
 		{
 			status = Status.RUNNING;
-			tick2.start();
+			startTick();
 			refreshUI();
 		}
 	}
@@ -384,7 +383,7 @@ public class App extends Thread {
 	{
 		status = Status.END;
 		
-		tick2.stop();
+		stopTick();
 		
 		refreshUI();
 
@@ -501,7 +500,7 @@ public class App extends Thread {
 		
 		
 		status = Status.RUNNING;
-		tick2.start();
+		startTick();
 		
 		try {
 			while (true)
@@ -532,7 +531,7 @@ public class App extends Thread {
 		// 游戏结束界面仍然可以在窗口显示
 		
 		// 停止定时器
-		tick2.stop();
+		stopTick();
 	}
 }
 
