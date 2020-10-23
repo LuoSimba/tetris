@@ -343,22 +343,22 @@ public class App extends Thread {
 			if (rows >= 4)
 			{
 				score += 6;
-				pianist.ding();
+				pianist.ding4();
 			}
 			else if (rows == 3)
 			{
 				score += 4;
-				pianist.ding();
+				pianist.ding3();
 			}
 			else if (rows == 2)
 			{
 				score += 2;
-				pianist.ding();
+				pianist.ding2();
 			}
 			else if (rows == 1)
 			{
 				score ++;
-				pianist.ding();
+				pianist.ding1();
 			}
 			
 			// Ω· ¯”Œœ∑≈–∂œ

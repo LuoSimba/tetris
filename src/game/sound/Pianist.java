@@ -20,6 +20,7 @@ public class Pianist {
 	private Synthesizer synth;
 	
 	private MidiChannel chPiano;
+	private MidiChannel ch2;
 	
 	private Sequence seq;
 	
@@ -53,14 +54,14 @@ public class Pianist {
 			// open before get sound-bank
 			synth.open();
 			
-			Soundbank sb = synth.getDefaultSoundbank();
-			Instrument[] instruments = sb.getInstruments();
-			synth.loadInstrument(instruments[0]);
-			
+			//Soundbank sb = synth.getDefaultSoundbank();
+			//Instrument[] instruments = sb.getInstruments();
 			MidiChannel[] channels = synth.getChannels();
 			chPiano = channels[0];
+			ch2     = channels[1];
 			chPiano.controlChange(7, 100);
-			
+			// 为通道选择一种乐器
+			ch2.programChange(1);
 			
 			seqr = MidiSystem.getSequencer(false);
 			seqr.open();
@@ -92,22 +93,60 @@ public class Pianist {
 		chPiano.noteOff(19, 1);
 	}
 	
-	public void ding()
+	/**
+	 * 弹奏叮的一声
+	 */
+	public void ding1()
+	{
+		int C = 84;
+		
+		ch2.noteOn(C, 100);
+		ch2.noteOff(C, 100);
+	}
+	
+	public void ding2()
+	{
+		int C = 84;
+		int G = 91;
+		
+		ch2.noteOn(C, 100);
+		ch2.noteOn(G, 100);
+		
+		ch2.noteOff(C, 100);
+		ch2.noteOff(G, 100);
+	}
+	
+	public void ding3()
+	{
+		int C = 84;
+		int G = 91;
+		int CC = 96;
+		
+		ch2.noteOn(C, 100);
+		ch2.noteOn(G, 100);
+		ch2.noteOn(CC, 100);
+		
+		ch2.noteOff(C, 100);
+		ch2.noteOff(G, 100);
+		ch2.noteOff(CC, 100);
+	}
+	
+	public void ding4()
 	{
 		int C = 84;
 		int E = 88;
 		int G = 91;
+		int CC = 96;
 		
-		C += 8;
-		E += 8;
-		G += 8;
-		chPiano.noteOn(C, 100);
-		chPiano.noteOn(E, 100);
-		chPiano.noteOn(G, 100);
+		ch2.noteOn(C, 100);
+		ch2.noteOn(E, 100);
+		ch2.noteOn(G, 100);
+		ch2.noteOn(CC, 100);
 		
-		chPiano.noteOff(C, 100);
-		chPiano.noteOff(E, 100);
-		chPiano.noteOff(G, 100);
+		ch2.noteOff(C, 100);
+		ch2.noteOff(E, 100);
+		ch2.noteOff(G, 100);
+		ch2.noteOff(CC, 100);
 	}
 	
 	synchronized private void playMusic(Sequence seq)
