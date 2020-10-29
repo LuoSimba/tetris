@@ -22,7 +22,9 @@ import java.awt.event.WindowListener;
 import java.awt.image.MemoryImageSource;
 import java.util.HashSet;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 import javax.swing.WindowConstants;
 
 /**
@@ -130,6 +132,10 @@ implements ActionListener, MouseMotionListener, WindowListener {
 	
 	private final Cursor cursor;
 	private boolean isCursorShow;
+	/**
+	 * 窗口上的菜单栏
+	 */
+	final private MenuBar menu;
 	private App app;
 	
 	private Window()
@@ -157,8 +163,8 @@ implements ActionListener, MouseMotionListener, WindowListener {
 		isCursorShow = true;
 		
 		// set up the menu bar.
-		MenuBar mb = new MenuBar(this);
-		this.setJMenuBar(mb);
+		menu = new MenuBar(this);
+		this.setJMenuBar(menu);
 		
 		this.add(new GamePanel());
 		this.add(new SidePanel(), BorderLayout.EAST);
@@ -215,6 +221,8 @@ implements ActionListener, MouseMotionListener, WindowListener {
 		killGame();
 		
 		this.app = new App(this);
+		
+		this.app.addGameListener(menu);
 		// 立即开始运行
 		this.app.start();
 	}
@@ -248,6 +256,13 @@ implements ActionListener, MouseMotionListener, WindowListener {
 			killGame();
 			
 			this.repaint();
+		}
+		else if (command == "暂停")
+		{
+			//JCheckBoxMenuItem item = (JCheckBoxMenuItem) e.getSource();
+			//boolean isCheck = item.isSelected();
+			
+			putCommand(Command.PAUSE);
 		}
 		else if (command == "新游戏")
 		{

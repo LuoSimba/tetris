@@ -3,11 +3,13 @@ package game;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.HashSet;
 import java.util.concurrent.ScheduledFuture;
 
 import game.config.TetrisConstants;
 import game.model.Command;
 import game.model.EventQueue;
+import game.model.GameListener;
 import game.model.MusicEvent;
 import game.model.Page;
 import game.model.Shape;
@@ -72,6 +74,8 @@ public class App extends Thread {
 	private EventQueue  queue;
 	private HeartBeat   task2;
 	private ScheduledFuture<?> future;
+	
+	private HashSet<GameListener> listeners;
 
 
 	/**
@@ -93,6 +97,11 @@ public class App extends Thread {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+		
+		for (GameListener l : listeners)
+		{
+			l.onDispose();
 		}
 	}
 	
@@ -116,6 +125,7 @@ public class App extends Thread {
 		future      = null;
 		
 		pianist     = new Pianist();
+		listeners   = new HashSet<GameListener>();
 		
 		shapePic    = new Page(size * unit, size * unit);
 		shapePicImg = new Page(size * unit, size * unit);
@@ -124,6 +134,11 @@ public class App extends Thread {
 		
 		this.setName("app-" + count);
 		count ++;
+	}
+	
+	public void addGameListener(GameListener l)
+	{
+		listeners.add(l);
 	}
 	
 	/**
@@ -227,6 +242,10 @@ public class App extends Thread {
 		if (status == Status.RUNNING) {
 			status = Status.PAUSE;
 			stopTick();
+			
+			for (GameListener l : listeners)
+				l.onGamePause();
+			
 			refreshUI();
 		}
 	}
@@ -242,6 +261,10 @@ public class App extends Thread {
 		{
 			status = Status.RUNNING;
 			startTick();
+			
+			for (GameListener l : listeners)
+				l.onGameResume();
+			
 			refreshUI();
 		}
 	}
@@ -384,6 +407,11 @@ public class App extends Thread {
 		
 		stopTick();
 		
+		for (GameListener l : listeners)
+		{
+			l.onGameOver();
+		}
+		
 		refreshUI();
 
 		// ≤•∑≈Ω· ¯“Ù¿÷
@@ -499,6 +527,12 @@ public class App extends Thread {
 		
 		
 		status = Status.RUNNING;
+		
+		for (GameListener l : listeners)
+		{
+			l.onGameStart();
+		}
+		
 		startTick();
 		
 		try {
