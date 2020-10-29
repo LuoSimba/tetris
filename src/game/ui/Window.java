@@ -322,7 +322,9 @@ implements ActionListener, MouseMotionListener, WindowListener {
 
 	@Override
 	public void windowClosing(WindowEvent e) {
-		// do nothing
+		
+		// 关闭窗口时，必须结束游戏实例
+		killGame();
 	}
 
 	@Override
