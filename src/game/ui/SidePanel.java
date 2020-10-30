@@ -28,12 +28,12 @@ public class SidePanel extends JPanel {
 		return size;
 	}
 	
-	private Window getWindow()
+	private GameView getView()
 	{
-		Container c = this.getTopLevelAncestor();
+		Container c = this.getParent();
 
-		if (c instanceof Window)
-			return (Window) c;
+		if (c instanceof GameView)
+			return (GameView) c;
 		
 		return null;
 	}
@@ -59,13 +59,13 @@ public class SidePanel extends JPanel {
 		
 		// 获取窗口
 		// 如果没有添加到窗口中，则不再继续绘制
-		Window win = getWindow();
-		if (win == null)
+		GameView view = getView();
+		if (view == null)
 			return;
 
 		// 获取游戏实例
 		// 如果没有游戏实例，也不需要继续绘制
-		App app = win.getApp();
+		App app = view.getApp();
 		if (app == null)
 			return;
 		

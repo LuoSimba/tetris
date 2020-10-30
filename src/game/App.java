@@ -19,7 +19,7 @@ import game.model.Status;
 import game.model.Task;
 import game.sound.Pianist;
 import game.sound.RealPlayer;
-import game.ui.Window;
+import game.ui.GameView;
 
 /**
  * 游戏实例在一个单独的线程运行
@@ -60,7 +60,7 @@ public class App extends Thread {
 	
 	
 	
-	private Window      win;
+	private GameView    view;
 	private Space       space;
 	private ShapeFactory factory;
 	private Shape       shape;
@@ -83,7 +83,8 @@ public class App extends Thread {
 	 */
 	synchronized public void dispose()
 	{
-		win = null;
+		// 解除与视图的绑定
+		view = null;
 		
 		pianist.dispose();
 		
@@ -105,9 +106,10 @@ public class App extends Thread {
 		}
 	}
 	
-	public App(Window win)
+	public App(GameView view)
 	{
-		this.win = win;
+		// 关联视图
+		this.view = view;
 		
 		int unit = TetrisConstants.TILE_SIZE;
 		int unit_s = TetrisConstants.TILE_SIZE_SMALL;
@@ -149,9 +151,9 @@ public class App extends Thread {
 	 */
 	private void refreshUI()
 	{
-		if (win != null)
+		if (view != null)
 		{
-			win.repaint();
+			view.repaint();
 		}
 	}
 	

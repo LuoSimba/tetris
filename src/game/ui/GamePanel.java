@@ -32,12 +32,14 @@ public class GamePanel extends JPanel {
 		return size;
 	}
 	
-	private Window getWindow()
+	private GameView getView()
 	{
-		Container c = this.getTopLevelAncestor();
+		//Container c = this.getTopLevelAncestor();
+		
+		Container c = this.getParent();
 
-		if (c instanceof Window)
-			return (Window) c;
+		if (c instanceof GameView)
+			return (GameView) c;
 		
 		return null;
 	}
@@ -50,11 +52,11 @@ public class GamePanel extends JPanel {
 		
 		int unit = TetrisConstants.TILE_SIZE;
 		
-		Window win = getWindow();
-		if (win == null)
+		GameView view = getView();
+		if (view == null)
 			return;
 		
-		App app = win.getApp();
+		App app = view.getApp();
 		
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setFont(TetrisConstants.FONT);

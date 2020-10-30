@@ -6,7 +6,6 @@ import game.model.Command;
 import game.model.Task;
 import game.sound.RealPlayer;
 
-import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Image;
 import java.awt.Point;
@@ -21,7 +20,9 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.MemoryImageSource;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 /**
@@ -137,12 +138,10 @@ implements ActionListener, MouseMotionListener, WindowListener {
 	 * 窗口上的菜单栏
 	 */
 	final private MenuBar menu;
-	private App app;
+	private GameView view1;
 	
 	private Window()
 	{
-		app = null;
-		
 		this.setTitle("俄罗斯方块");
 		// WindowConstants.EXIT_ON_CLOSE;
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -167,8 +166,13 @@ implements ActionListener, MouseMotionListener, WindowListener {
 		menu = new MenuBar(this);
 		this.setJMenuBar(menu);
 		
-		this.add(new GamePanel());
-		this.add(new SidePanel(), BorderLayout.EAST);
+		JPanel content = (JPanel) this.getContentPane();
+		content.setLayout(new BoxLayout(content, BoxLayout.X_AXIS));
+		
+		view1 = new GameView();
+		
+		this.add(view1);
+		//this.add(view2);
 		this.pack();
 		// 使窗体居中
 		this.setLocationRelativeTo(null);
@@ -200,37 +204,12 @@ implements ActionListener, MouseMotionListener, WindowListener {
 		}
 	}
 	
-	/**
-	 * 清理当前的游戏实例
-	 */
-	private void killGame()
-	{
-		if (this.app != null)
-		{
-			this.app.dispose();
-			this.app = null;
-		}
-	}
-	
-	/**
-	 * 创建一个新的游戏实例
-	 * 
-	 * 自动清理已存在的游戏实例
-	 */
 	private void createNewGame()
 	{
-		killGame();
-		
-		this.app = new App(this);
-		
-		this.app.addGameListener(menu);
+		App app = view1.createNewGame();
+		app.addGameListener(menu);
 		// 立即开始运行
-		this.app.start();
-	}
-	
-	synchronized public App getApp()
-	{
-		return app;
+		app.start();
 	}
 	
 	/**
@@ -238,13 +217,7 @@ implements ActionListener, MouseMotionListener, WindowListener {
 	 */
 	public void putCommand(Command cmd)
 	{
-		if (app == null)
-			return;
-		
-		if (app.isGameOver())
-			return;
-
-		app.putCommand(cmd);
+		view1.putCommand(cmd);
 	}
 	
 	@Override 
@@ -254,9 +227,8 @@ implements ActionListener, MouseMotionListener, WindowListener {
 		
 		if (command == "结束游戏")
 		{
-			killGame();
-			
-			this.repaint();
+			view1.killGame();
+			view1.repaint();
 		}
 		else if (command == "暂停")
 		{
@@ -321,7 +293,8 @@ implements ActionListener, MouseMotionListener, WindowListener {
 	public void windowClosing(WindowEvent e) {
 		
 		// 关闭窗口时，必须结束游戏实例
-		killGame();
+		
+		view1.killGame();
 	}
 
 	@Override
