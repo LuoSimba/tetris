@@ -20,14 +20,13 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.MemoryImageSource;
-import java.util.HashSet;
 
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
-import javax.swing.JMenuBar;
 import javax.swing.WindowConstants;
 
 /**
+ * 只能创建一个窗口实例
+ * 
  * 窗口自己管理控件
  * 
  * ==========================================================
@@ -119,15 +118,17 @@ implements ActionListener, MouseMotionListener, WindowListener {
 	/**
 	 * 存放窗口实例
 	 */
-	private static HashSet<Window> set = new HashSet<Window>();
+	private static Window inst = null;
 	
 	/**
 	 * 创建窗口的统一方式
 	 */
 	public static void createWindow()
 	{
-		Window win = new Window();
-		set.add(win);
+		if (inst == null)
+		{
+			inst = new Window();
+		}
 	}
 	
 	private final Cursor cursor;
@@ -306,18 +307,14 @@ implements ActionListener, MouseMotionListener, WindowListener {
 
 	@Override
 	public void windowClosed(WindowEvent e) {
-		set.remove(this);
+	
+		// 记得关闭背景音乐
+		RealPlayer.close();
 		
-		if (set.isEmpty())
-		{
-			// 记得关闭背景音乐
-			RealPlayer.close();
-			
-			// 和定时器服务
-			Task.close();
-			
-			System.exit(0);
-		}
+		// 和定时器服务
+		Task.close();
+		
+		System.exit(0);
 	}
 
 	@Override

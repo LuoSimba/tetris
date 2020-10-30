@@ -50,22 +50,16 @@ implements GameListener {
 
 	public MenuBar(ActionListener listener)
 	{
-		JMenu menu = new JMenu("文件");
-		
 		menuPause = new JCheckBoxMenuItem("暂停");
 		menuDispose = new JMenuItem("结束游戏");
 		
 		menuPause.setEnabled(false);
 		menuDispose.setEnabled(false);
-		
-		JMenuItem[] items = {
-				new JMenuItem("新游戏"),
-				menuPause,
-				menuDispose,
-		};
-		patchAdd(menu, items, listener);
 
-		menu.addSeparator();
+
+
+		JMenu menu = new JMenu("文件");
+		//menu.addSeparator();
 		
 		JMenuItem[] items2 = {
 				new JMenuItem("帮助"),
@@ -75,8 +69,28 @@ implements GameListener {
 		
 		this.add(menu);
 		
+		addGameMenu(listener);
+		
 		addMusicMenu();
 	}
+	
+	/**
+	 * 游戏菜单
+	 */
+	private void addGameMenu(ActionListener listener)
+	{
+		JMenu menu = new JMenu("游戏");
+		
+		JMenuItem[] items = {
+				new JMenuItem("新游戏"),
+				menuPause,
+				menuDispose,
+		};
+		patchAdd(menu, items, listener);
+		
+		this.add(menu);
+	}
+	
 	
 	/**
 	 * 背景音乐菜单
