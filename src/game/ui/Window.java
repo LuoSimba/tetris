@@ -20,7 +20,6 @@ import java.awt.event.WindowListener;
 import java.awt.image.MemoryImageSource;
 
 import javax.swing.BoxLayout;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
@@ -37,9 +36,6 @@ import javax.swing.WindowConstants;
  * 窗口负责接收输入
  *  Keypad
  * 
- * 窗口负责处理菜单命令 
- *  ActionListener.actionPerformed(ActionEvent e); 
- * 
  * 窗口负责处理鼠标移动事件
  *  MouseMotionListener.mouseMoved(MouseEvent);
  * 
@@ -51,7 +47,7 @@ import javax.swing.WindowConstants;
  * 窗口控制背景音乐的开关
  */
 public class Window extends JFrame 
-implements ActionListener, MouseMotionListener, WindowListener {
+implements MouseMotionListener, WindowListener {
 	
 	/**
 	 * 处理按键
@@ -195,26 +191,6 @@ implements ActionListener, MouseMotionListener, WindowListener {
 			this.setCursor(Cursor.getDefaultCursor());
 			
 			isCursorShow = true;
-		}
-	}
-	
-	@Override 
-	synchronized public void actionPerformed(ActionEvent e)
-	{
-		String command = e.getActionCommand();
-			
-		if (command == "帮助")
-		{
-			new HelpDialog(this);
-		}
-		else if (command == "退出")
-		{
-			// 退出的意思是： 关闭当前窗口
-			this.dispose();
-		}
-		else
-		{
-			System.out.println("菜单命令：" + command);
 		}
 	}
 	

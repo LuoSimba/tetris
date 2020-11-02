@@ -18,66 +18,62 @@ import javax.swing.JMenuItem;
 public class MenuBar extends JMenuBar {
 	
 	/**
-	 * ´¦Àí±³¾°ÒôÀÖ²Ëµ¥
+	 * ´¦Àí²Ëµ¥ÃüÁî
 	 */
-	private class MenuProc_Music implements ActionListener {
+	private class MenuProc implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String cmd = e.getActionCommand();
-			
-			if (cmd == "´ò¿ª")
+			Object src = e.getSource();
+
+			if (cmd == "±³¾°ÒôÀÖ")
 			{
-				RealPlayer.open();
+				JCheckBoxMenuItem item = (JCheckBoxMenuItem) src;
+				
+				if (item.isSelected())
+				{
+					RealPlayer.open();
+				}
+				else
+				{
+					RealPlayer.close();
+				}
 			}
-			else if (cmd == "¹Ø±Õ")
+			else if (cmd == "°ïÖú")
 			{
-				RealPlayer.close();
+				new HelpDialog(win);
 			}
-			else 
+			else if (cmd == "")
 			{
-				System.out.println("´¦Àí±³¾°ÒôÀÖ²Ëµ¥ÃüÁî£º" + cmd);
+				win.dispose();
+			}
+			else
+			{
+				System.out.println("²Ëµ¥ÃüÁî£º" + cmd);
 			}
 		}
 	}
 	
 	private static final long serialVersionUID = 1L;
+	
+	private Window win;
+	
+	private ActionListener listener;
 
-	public MenuBar(ActionListener listener)
+	public MenuBar(Window win)
 	{
+		this.win = win;
+		this.listener = new MenuProc();
+		
 		JMenu menu = new JMenu("ÎÄ¼ş");
+		
+		add0(menu, new JCheckBoxMenuItem("±³¾°ÒôÀÖ"), listener);
 		add0(menu, new JMenuItem("°ïÖú"), listener);
 		menu.addSeparator();
 		add0(menu, new JMenuItem("ÍË³ö"), listener);
 		
 		this.add(menu);
-		addMusicMenu();
-	}
-	
-	/**
-	 * ±³¾°ÒôÀÖ²Ëµ¥
-	 */
-	private void addMusicMenu()
-	{
-		JMenu menu = new JMenu("±³¾°ÒôÀÖ");
-		
-		ActionListener al = new MenuProc_Music();
-		
-		JMenuItem[] items = {
-				new JMenuItem("´ò¿ª"),
-				new JMenuItem("¹Ø±Õ"),
-		};
-		patchAdd(menu, items, al);
-		
-		this.add(menu);
-	}
-	
-	private void patchAdd(JMenu menu, JMenuItem[] items, ActionListener al)
-	{
-		for (int i = 0; i < items.length; i ++)
-		{
-			add0(menu, items[i], al);
-		}
 	}
 	
 	private void add0(JMenu menu, JMenuItem item, ActionListener al)
