@@ -1,7 +1,6 @@
 package game.ui;
 
 
-import game.App;
 import game.model.Command;
 import game.model.Task;
 import game.sound.RealPlayer;
@@ -21,6 +20,7 @@ import java.awt.event.WindowListener;
 import java.awt.image.MemoryImageSource;
 
 import javax.swing.BoxLayout;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
@@ -66,11 +66,48 @@ implements ActionListener, MouseMotionListener, WindowListener {
 			
 			int code = e.getKeyCode();
 			
-			Command cmd = key2cmd(code);
-			
-			if (cmd != null)
+			switch (code)
 			{
-				Window.this.putCommand(cmd);
+			// player A
+			case KeyEvent.VK_RIGHT:
+				view1.putCommand(Command.RIGHT);
+				break;
+			case KeyEvent.VK_LEFT:
+				view1.putCommand(Command.LEFT);
+				break;
+			case KeyEvent.VK_UP:
+				view1.putCommand(Command.ROTATE);
+				break;
+			case KeyEvent.VK_DOWN:
+				view1.putCommand(Command.DOWN);
+				break;
+			case KeyEvent.VK_SPACE:
+				view1.putCommand(Command.NEXT_SHAPE); // for debug only
+				break;
+			case KeyEvent.VK_P:
+				view1.putCommand(Command.PAUSE);
+				break;
+				
+			// player B
+			case KeyEvent.VK_NUMPAD6:
+				view2.putCommand(Command.RIGHT);
+				break;
+			case KeyEvent.VK_NUMPAD4:
+				view2.putCommand(Command.LEFT);
+				break;
+			case KeyEvent.VK_NUMPAD8:
+				view2.putCommand(Command.ROTATE);
+				break;
+			case KeyEvent.VK_NUMPAD5:
+				view2.putCommand(Command.DOWN);
+				break;
+			case KeyEvent.VK_NUMPAD0:
+				view2.putCommand(Command.PAUSE);
+				break;
+				
+				
+			default:
+				break;
 			}
 		}
 
@@ -83,33 +120,6 @@ implements ActionListener, MouseMotionListener, WindowListener {
 		public void keyTyped(KeyEvent e) {
 			// TODO Auto-generated method stub
 		}
-		
-		/**
-		 * 将按键转换成命令
-		 * 
-		 * 如果没有对应的命令，则返回 null
-		 */
-		private Command key2cmd(int keyCode)
-		{
-			switch (keyCode)
-			{
-			case KeyEvent.VK_RIGHT:
-				return Command.RIGHT;
-			case KeyEvent.VK_LEFT:
-				return Command.LEFT;
-			case KeyEvent.VK_UP:
-				return Command.ROTATE;
-			case KeyEvent.VK_DOWN:
-				return Command.DOWN;
-			case KeyEvent.VK_SPACE:
-				return Command.NEXT_SHAPE;
-			case KeyEvent.VK_P:
-				return Command.PAUSE;
-			default:
-				return null;
-			}
-		}
-
 	}
 	
 	
@@ -138,7 +148,9 @@ implements ActionListener, MouseMotionListener, WindowListener {
 	 * 窗口上的菜单栏
 	 */
 	final private MenuBar menu;
+	final private JPanel content;
 	private GameView view1;
+	private GameView view2;
 	
 	private Window()
 	{
@@ -166,13 +178,15 @@ implements ActionListener, MouseMotionListener, WindowListener {
 		menu = new MenuBar(this);
 		this.setJMenuBar(menu);
 		
-		JPanel content = (JPanel) this.getContentPane();
+		content = (JPanel) this.getContentPane();
 		content.setLayout(new BoxLayout(content, BoxLayout.X_AXIS));
 		
-		view1 = new GameView();
+		view1 = new GameView("玩家A");
+		view2 = new GameView("玩家B");
+		
+		menu.add(view1.getMenu());
 		
 		this.add(view1);
-		//this.add(view2);
 		this.pack();
 		// 使窗体居中
 		this.setLocationRelativeTo(null);
@@ -204,42 +218,36 @@ implements ActionListener, MouseMotionListener, WindowListener {
 		}
 	}
 	
-	private void createNewGame()
+	private void setDouble(boolean isDouble)
 	{
-		App app = view1.createNewGame();
-		app.addGameListener(menu);
-		// 立即开始运行
-		app.start();
-	}
-	
-	/**
-	 * 保存一个命令
-	 */
-	public void putCommand(Command cmd)
-	{
-		view1.putCommand(cmd);
+		if (isDouble)
+		{
+			menu.add(view2.getMenu());
+			content.add(view2);
+		}
+		else
+		{
+			view2.killGame();
+			menu.remove(view2.getMenu());
+			content.remove(view2);
+		}
+		
+		this.pack();
 	}
 	
 	@Override 
 	synchronized public void actionPerformed(ActionEvent e)
 	{
 		String command = e.getActionCommand();
+		Object src = e.getSource();
 		
-		if (command == "结束游戏")
+		
+		if (command == "双人游戏")
 		{
-			view1.killGame();
-			view1.repaint();
-		}
-		else if (command == "暂停")
-		{
-			//JCheckBoxMenuItem item = (JCheckBoxMenuItem) e.getSource();
-			//boolean isCheck = item.isSelected();
+			JCheckBoxMenuItem item = (JCheckBoxMenuItem) src;
+			boolean isCheck = item.isSelected();
 			
-			putCommand(Command.PAUSE);
-		}
-		else if (command == "新游戏")
-		{
-			createNewGame();
+			setDouble(isCheck);
 		}
 		else if (command == "帮助")
 		{
@@ -295,6 +303,7 @@ implements ActionListener, MouseMotionListener, WindowListener {
 		// 关闭窗口时，必须结束游戏实例
 		
 		view1.killGame();
+		view2.killGame();
 	}
 
 	@Override

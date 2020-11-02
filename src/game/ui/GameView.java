@@ -11,17 +11,24 @@ import javax.swing.JPanel;
  * 游戏视图
  * 
  * 游戏视图将游戏的运行结果绘制在屏幕上
+ * 
+ * 应用可以包含多个游戏视图。
+ * 每个游戏视图有自己的名字，以便相互区别
  */
 public class GameView extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
 	
+	private GameControlMenu menu;
 	private App app;
 
 	
-	public GameView()
+	public GameView(String name)
 	{
+		this.setName(name);
+		
+		menu = new GameControlMenu(this);
 		app = null;
 		
 		this.setLayout(new BorderLayout());
@@ -29,6 +36,11 @@ public class GameView extends JPanel {
 		this.add(new GamePanel());
 		
 		this.add(new SidePanel(), BorderLayout.EAST);
+	}
+	
+	public GameControlMenu getMenu()
+	{
+		return menu;
 	}
 	
 	/**

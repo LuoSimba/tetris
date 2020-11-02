@@ -1,6 +1,5 @@
 package game.ui;
 
-import game.model.GameListener;
 import game.sound.RealPlayer;
 
 import java.awt.event.ActionEvent;
@@ -16,11 +15,7 @@ import javax.swing.JMenuItem;
  * 
  * 菜单参与监听游戏的状态变化
  */
-public class MenuBar extends JMenuBar 
-implements GameListener {
-	
-	final private JCheckBoxMenuItem menuPause;
-	final private JMenuItem menuDispose;
+public class MenuBar extends JMenuBar {
 	
 	/**
 	 * 处理背景音乐菜单
@@ -50,47 +45,15 @@ implements GameListener {
 
 	public MenuBar(ActionListener listener)
 	{
-		menuPause = new JCheckBoxMenuItem("暂停");
-		menuDispose = new JMenuItem("结束游戏");
-		
-		menuPause.setEnabled(false);
-		menuDispose.setEnabled(false);
-
-
-
 		JMenu menu = new JMenu("文件");
-		//menu.addSeparator();
-		
-		JMenuItem[] items2 = {
-				new JMenuItem("帮助"),
-				new JMenuItem("退出"),
-		};
-		patchAdd(menu, items2, listener);
+		add0(menu, new JCheckBoxMenuItem("双人游戏"), listener);
+		add0(menu, new JMenuItem("帮助"), listener);
+		menu.addSeparator();
+		add0(menu, new JMenuItem("退出"), listener);
 		
 		this.add(menu);
-		
-		addGameMenu(listener);
-		
 		addMusicMenu();
 	}
-	
-	/**
-	 * 游戏菜单
-	 */
-	private void addGameMenu(ActionListener listener)
-	{
-		JMenu menu = new JMenu("游戏");
-		
-		JMenuItem[] items = {
-				new JMenuItem("新游戏"),
-				menuPause,
-				menuDispose,
-		};
-		patchAdd(menu, items, listener);
-		
-		this.add(menu);
-	}
-	
 	
 	/**
 	 * 背景音乐菜单
@@ -114,41 +77,13 @@ implements GameListener {
 	{
 		for (int i = 0; i < items.length; i ++)
 		{
-			items[i].addActionListener(al);
-			menu.add(items[i]);
+			add0(menu, items[i], al);
 		}
 	}
-
-	@Override
-	public void onGamePause() {
-		menuPause.setSelected(true);
-	}
-
-	@Override
-	public void onGameResume() {
-		menuPause.setSelected(false);
-	}
-
-	@Override
-	public void onDispose() {
-		menuPause.setSelected(false);
-		menuPause.setEnabled(false);
-		
-		menuDispose.setEnabled(false);
-	}
-
-	@Override
-	public void onGameOver() {
-		menuPause.setSelected(false);
-		menuPause.setEnabled(false);
-	}
-
-	@Override
-	public void onGameStart() {
-		
-		menuPause.setSelected(false);
-		menuPause.setEnabled(true);
-		
-		menuDispose.setEnabled(true);
+	
+	private void add0(JMenu menu, JMenuItem item, ActionListener al)
+	{
+		item.addActionListener(al);
+		menu.add(item);
 	}
 }
