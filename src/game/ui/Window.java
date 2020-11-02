@@ -88,24 +88,6 @@ implements ActionListener, MouseMotionListener, WindowListener {
 				view1.putCommand(Command.PAUSE);
 				break;
 				
-			// player B
-			case KeyEvent.VK_NUMPAD6:
-				view2.putCommand(Command.RIGHT);
-				break;
-			case KeyEvent.VK_NUMPAD4:
-				view2.putCommand(Command.LEFT);
-				break;
-			case KeyEvent.VK_NUMPAD8:
-				view2.putCommand(Command.ROTATE);
-				break;
-			case KeyEvent.VK_NUMPAD5:
-				view2.putCommand(Command.DOWN);
-				break;
-			case KeyEvent.VK_NUMPAD0:
-				view2.putCommand(Command.PAUSE);
-				break;
-				
-				
 			default:
 				break;
 			}
@@ -150,7 +132,6 @@ implements ActionListener, MouseMotionListener, WindowListener {
 	final private MenuBar menu;
 	final private JPanel content;
 	private GameView view1;
-	private GameView view2;
 	
 	private Window()
 	{
@@ -181,8 +162,7 @@ implements ActionListener, MouseMotionListener, WindowListener {
 		content = (JPanel) this.getContentPane();
 		content.setLayout(new BoxLayout(content, BoxLayout.X_AXIS));
 		
-		view1 = new GameView("玩家A");
-		view2 = new GameView("玩家B");
+		view1 = new GameView("游戏");
 		
 		menu.add(view1.getMenu());
 		
@@ -218,38 +198,12 @@ implements ActionListener, MouseMotionListener, WindowListener {
 		}
 	}
 	
-	private void setDouble(boolean isDouble)
-	{
-		if (isDouble)
-		{
-			menu.add(view2.getMenu());
-			content.add(view2);
-		}
-		else
-		{
-			view2.killGame();
-			menu.remove(view2.getMenu());
-			content.remove(view2);
-		}
-		
-		this.pack();
-	}
-	
 	@Override 
 	synchronized public void actionPerformed(ActionEvent e)
 	{
 		String command = e.getActionCommand();
-		Object src = e.getSource();
-		
-		
-		if (command == "双人游戏")
-		{
-			JCheckBoxMenuItem item = (JCheckBoxMenuItem) src;
-			boolean isCheck = item.isSelected();
 			
-			setDouble(isCheck);
-		}
-		else if (command == "帮助")
+		if (command == "帮助")
 		{
 			new HelpDialog(this);
 		}
@@ -301,9 +255,7 @@ implements ActionListener, MouseMotionListener, WindowListener {
 	public void windowClosing(WindowEvent e) {
 		
 		// 关闭窗口时，必须结束游戏实例
-		
 		view1.killGame();
-		view2.killGame();
 	}
 
 	@Override

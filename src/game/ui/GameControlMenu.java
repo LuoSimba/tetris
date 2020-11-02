@@ -36,7 +36,7 @@ implements GameListener, ActionListener {
 
 	public GameControlMenu(GameView view)
 	{
-		super(view.getName());
+		super("сно╥");
 		
 		this.view = view;
 		
@@ -84,6 +84,7 @@ implements GameListener, ActionListener {
 	public void onGameStart() {
 		
 		itemPauseGame.setSelected(false);
+		//itemPauseGame.isSelected();
 		itemPauseGame.setEnabled(true);
 		
 		itemDispose.setEnabled(true);

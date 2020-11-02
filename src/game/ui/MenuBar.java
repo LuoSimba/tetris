@@ -46,7 +46,6 @@ public class MenuBar extends JMenuBar {
 	public MenuBar(ActionListener listener)
 	{
 		JMenu menu = new JMenu("文件");
-		add0(menu, new JCheckBoxMenuItem("双人游戏"), listener);
 		add0(menu, new JMenuItem("帮助"), listener);
 		menu.addSeparator();
 		add0(menu, new JMenuItem("退出"), listener);
