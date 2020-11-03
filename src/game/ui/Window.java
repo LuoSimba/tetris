@@ -6,9 +6,6 @@ import game.model.Task;
 import game.sound.RealPlayer;
 
 import java.awt.Cursor;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -17,7 +14,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.image.MemoryImageSource;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -120,7 +116,6 @@ implements MouseMotionListener, WindowListener {
 		}
 	}
 	
-	private final Cursor cursor;
 	private boolean isCursorShow;
 	/**
 	 * 窗口上的菜单栏
@@ -141,14 +136,6 @@ implements MouseMotionListener, WindowListener {
 		
 		this.enableInputMethods(false);
 		
-		// 创建一个透明的鼠标光标
-		Toolkit tk = Toolkit.getDefaultToolkit();
-		Point pt = new Point(0, 0);
-		MemoryImageSource src = new MemoryImageSource(0, 0, new int[0], 0, 0);
-		Image imageCursor = tk.createImage(src);
-		/*URL classUrl = this.getClass().getResource("");
-		Image imageCursor = tk.getImage(classUrl);*/
-		cursor = tk.createCustomCursor(imageCursor, pt, "cursor");
 		isCursorShow = true;
 		
 		// set up the menu bar.
@@ -174,22 +161,20 @@ implements MouseMotionListener, WindowListener {
 	}
 	
 	
-	public void hideCursor()
+	private void hideCursor()
 	{
 		if (isCursorShow)
 		{
-			this.setCursor(cursor);
-			
+			this.setCursor(CursorUtil.getTransparentCursor());
 			isCursorShow = false;
 		}
 	}
 	
-	public void showCursor()
+	private void showCursor()
 	{
 		if (!isCursorShow)
 		{
 			this.setCursor(Cursor.getDefaultCursor());
-			
 			isCursorShow = true;
 		}
 	}
