@@ -44,7 +44,7 @@ public class MenuBar extends JMenuBar {
 			{
 				new HelpDialog(win);
 			}
-			else if (cmd == "")
+			else if (cmd == "ÍË³ö")
 			{
 				win.dispose();
 			}
