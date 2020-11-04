@@ -24,13 +24,11 @@ public class CursorUtil {
 			
 			Point pt = new Point(0, 0);
 			
+			// 鼠标光标对应的图片
 			MemoryImageSource src = new MemoryImageSource(0, 0, new int[0], 0, 0);
-			
-			Image imageCursor = tk.createImage(src);
-			/*URL classUrl = this.getClass().getResource("");
-			Image imageCursor = tk.getImage(classUrl);*/
+			Image img = tk.createImage(src);
 
-			cur = tk.createCustomCursor(imageCursor, pt, "cursor");
+			cur = tk.createCustomCursor(img, pt, "cursor");
 		}
 		
 		return cur;
