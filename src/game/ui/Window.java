@@ -2,7 +2,7 @@ package game.ui;
 
 
 import game.model.Command;
-import game.model.Task;
+import game.model.TaskService;
 import game.sound.RealPlayer;
 
 import java.awt.Cursor;
@@ -207,7 +207,7 @@ implements MouseMotionListener, WindowListener {
 		RealPlayer.close();
 		
 		// 和定时器服务
-		Task.close();
+		TaskService.close();
 		
 		System.exit(0);
 	}

@@ -81,6 +81,9 @@ public class SidePanel extends JPanel {
 		g2.drawString("得分", 10, 110);
 		g2.drawString("" + app.getScore(), 10, 130);
 		
+		g2.drawString("等级", 10, 170);
+		g2.drawString("" + app.getLevel(), 10, 190);
+		
 		// 下一个方块预览图
 		g2.drawImage(app.getNextShapePic(), 10, 200, null);
 	}

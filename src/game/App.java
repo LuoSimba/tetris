@@ -10,6 +10,7 @@ import game.config.TetrisConstants;
 import game.model.Command;
 import game.model.EventQueue;
 import game.model.GameListener;
+import game.model.Level;
 import game.model.MusicEvent;
 import game.model.Page;
 import game.model.Shape;
@@ -17,6 +18,7 @@ import game.model.ShapeFactory;
 import game.model.Space;
 import game.model.Status;
 import game.model.Task;
+import game.model.TaskService;
 import game.sound.Pianist;
 import game.sound.RealPlayer;
 import game.ui.GameView;
@@ -39,13 +41,47 @@ public class App extends Thread {
 	 * 
 	 * 心跳驱动游戏时间前进
 	 */
-	private class HeartBeat implements Runnable {
+	private class HeartBeat implements Task {
+		
+		private ScheduledFuture<?> future;
 		
 		@Override
 		public void run()
 		{
 			// 心跳转化为方块下落的动力
 			App.this.queue.offer(Command.DOWN);
+		}
+
+		@Override
+		synchronized public void cancel() {
+			if (future != null)
+			{
+				future.cancel(true);
+				future = null;
+			}
+		}
+
+		@Override
+		synchronized public void setHandle(ScheduledFuture<?> future) {
+			this.future = future;
+		}
+
+		@Override
+		synchronized public boolean isRunning() {
+			return future != null;
+		}
+
+		@Override
+		synchronized public void start() {
+			if (!this.isRunning())
+			{
+				TaskService.addTick(this);
+			}
+		}
+		
+		@Override
+		public int getInterval() {
+			return App.this.levelMgr.getSpeed();
 		}
 	}
 	
@@ -70,10 +106,9 @@ public class App extends Thread {
 	private Page        nextShapePic;
 	private Pianist     pianist;
 	private Status      status;
-	private int         score;
 	private EventQueue  queue;
 	private HeartBeat   task2;
-	private ScheduledFuture<?> future;
+	private Level       levelMgr;
 	
 	private HashSet<GameListener> listeners;
 
@@ -115,7 +150,6 @@ public class App extends Thread {
 		int unit_s = TetrisConstants.TILE_SIZE_SMALL;
 		int size = TetrisConstants.MAX_SHAPE_SIZE;
 		
-		score    = 0;
 		
 		// 游戏初始状态
 		status = Status.READY;
@@ -124,7 +158,7 @@ public class App extends Thread {
 		factory     = new ShapeFactory();
 		queue       = new EventQueue();
 		task2       = new HeartBeat();
-		future      = null;
+		levelMgr    = new Level(task2);
 		
 		pianist     = new Pianist();
 		listeners   = new HashSet<GameListener>();
@@ -212,29 +246,6 @@ public class App extends Thread {
 	}
 	
 	/**
-	 * 开始计时
-	 */
-	private void startTick()
-	{
-		if (future == null)
-		{
-			future = Task.addTick(task2);
-		}
-	}
-	
-	/**
-	 * 停止计时
-	 */
-	private void stopTick()
-	{
-		if (future != null)
-		{
-			future.cancel(true);
-			future = null;
-		}
-	}
-	
-	/**
 	 * 游戏暂停
 	 * 
 	 * RUNNING -> PAUSE
@@ -243,7 +254,8 @@ public class App extends Thread {
 	{
 		if (status == Status.RUNNING) {
 			status = Status.PAUSE;
-			stopTick();
+			
+			task2.cancel();
 			
 			for (GameListener l : listeners)
 				l.onGamePause();
@@ -262,7 +274,8 @@ public class App extends Thread {
 		if (status == Status.PAUSE)
 		{
 			status = Status.RUNNING;
-			startTick();
+			
+			task2.start();
 			
 			for (GameListener l : listeners)
 				l.onGameResume();
@@ -367,22 +380,22 @@ public class App extends Thread {
 			
 			if (rows >= 4)
 			{
-				score += 6;
+				levelMgr.addScore(6);
 				pianist.ding4();
 			}
 			else if (rows == 3)
 			{
-				score += 4;
+				levelMgr.addScore(4);
 				pianist.ding3();
 			}
 			else if (rows == 2)
 			{
-				score += 2;
+				levelMgr.addScore(2);
 				pianist.ding2();
 			}
 			else if (rows == 1)
 			{
-				score ++;
+				levelMgr.addScore(1);
 				pianist.ding1();
 			}
 			
@@ -407,7 +420,7 @@ public class App extends Thread {
 	{
 		status = Status.END;
 		
-		stopTick();
+		task2.cancel();
 		
 		for (GameListener l : listeners)
 		{
@@ -490,7 +503,12 @@ public class App extends Thread {
 	
 	synchronized public int getScore()
 	{
-		return score;
+		return levelMgr.getScore();
+	}
+	
+	synchronized public int getLevel()
+	{
+		return levelMgr.getLevel();
 	}
 	
 	/**
@@ -535,7 +553,7 @@ public class App extends Thread {
 			l.onGameStart();
 		}
 		
-		startTick();
+		task2.start();
 		
 		try {
 			while (true)
@@ -566,7 +584,7 @@ public class App extends Thread {
 		// 游戏结束界面仍然可以在窗口显示
 		
 		// 停止定时器
-		stopTick();
+		task2.cancel();
 	}
 }
 
