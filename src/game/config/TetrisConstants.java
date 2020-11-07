@@ -36,4 +36,6 @@ public interface TetrisConstants {
 	int MAX_SHAPE_SIZE = 4;
 	
 	Font FONT = new Font("monospace", Font.PLAIN, 20);
+	
+	String RES_MIDI_FOLDER = "/res/midi";
 }

@@ -1,5 +1,6 @@
 package game.sound;
 
+import game.config.TetrisConstants;
 import game.model.MusicEvent;
 import game.model.Util;
 
@@ -79,6 +80,9 @@ public class RealPlayer implements MetaEventListener, ControllerEventListener {
 	@Override
 	public void meta(MetaMessage meta) {
 		
+		/**
+		 * meta-event type, with a range of 00-7F.
+		 */
 		int type = meta.getType();
 		
 		if (type == 47)
@@ -187,7 +191,9 @@ public class RealPlayer implements MetaEventListener, ControllerEventListener {
 	 */
 	private Sequence getSequence(String resName) throws InvalidMidiDataException, IOException
 	{
-		URL url = this.getClass().getResource("res/" + resName + ".mid");
+		String folder = TetrisConstants.RES_MIDI_FOLDER;
+		
+		URL url = this.getClass().getResource(folder + "/" + resName + ".mid");
 		
 		return MidiSystem.getSequence(url);
 	}
