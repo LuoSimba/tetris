@@ -38,4 +38,5 @@ public interface TetrisConstants {
 	Font FONT = new Font("monospace", Font.PLAIN, 20);
 	
 	String RES_MIDI_FOLDER = "/res/midi";
+	String RES_DOC_FOLDER  = "/res/doc";
 }

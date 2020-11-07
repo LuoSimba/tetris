@@ -69,8 +69,14 @@ public class HelpDialog extends JDialog {
 	 */
 	private String getHelpContents()
 	{
+		String path = TetrisConstants.RES_DOC_FOLDER + "/help.txt";
+		
 		try {
-			URL url = HelpDialog.class.getResource("help.txt");
+			URL url = HelpDialog.class.getResource(path);
+			
+			if (url == null)
+				return "error(1)";
+			
 			URI uri = url.toURI();
 			File file = new File(uri);
 			FileInputStream is = new FileInputStream(file);
@@ -91,20 +97,20 @@ public class HelpDialog extends JDialog {
 			String doc = sb.toString();
 			
 			return doc;
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
+		} 
+		catch (URISyntaxException e) 
+		{
 			e.printStackTrace();
-			
 			return "error";
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+		} 
+		catch (FileNotFoundException e) 
+		{
 			e.printStackTrace();
-			
 			return "error";
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} 
+		catch (IOException e) 
+		{
 			e.printStackTrace();
-			
 			return "error";
 		}
 	}
