@@ -44,7 +44,7 @@ public abstract class Shape {
 		shapeIndex = 0;
 		data = new int[ mapSize ];
 		
-		fg = TetrisConstants.COLOR_TILE;
+		fg = ColorScheme.getDefaultColorScheme().getTileColor();
 		
 		parse();
 	}
@@ -262,7 +262,8 @@ public abstract class Shape {
 	
 	public void paintImage(Graphics2D g)
 	{
-		paint(g, TetrisConstants.TILE_SIZE, TetrisConstants.COLOR_SHADOW);
+		// XXX
+		paint(g, TetrisConstants.TILE_SIZE, ColorScheme.getDefaultColorScheme().getImgColor());
 	}
 	
 	public void paintPre(Graphics2D g)

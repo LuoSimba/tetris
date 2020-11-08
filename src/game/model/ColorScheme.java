@@ -10,8 +10,20 @@ import java.util.List;
  * 管理方块的配色
  * 
  * 应当只在 ShapeFactory 创建方块时使用。
+ * 
+ * 同时管理界面的配色（方块与界面应该是统一的）
  */
 public class ColorScheme {
+	
+	private static ColorScheme defaultCs;
+	
+	public static ColorScheme getDefaultColorScheme()
+	{
+		if (defaultCs == null)
+			defaultCs = new ColorScheme();
+		
+		return defaultCs;
+	}
 
 	
 	private List<Color> list;
@@ -50,6 +62,31 @@ public class ColorScheme {
 	
 	public Color getImgColor()
 	{
-		return TetrisConstants.COLOR_SHADOW;
+		// XXX
+		return new Color(255, 255, 255, 30);
+	}
+	
+	public Color getSpaceColor()
+	{
+		// XXX
+		return new Color(30, 30, 30);
+	}
+	
+	public Color getEdenColor()
+	{
+		// XXX
+		return new Color(55, 30, 30, 220);
+	}
+	
+	public Color getSideBackgroundColor()
+	{
+		// XXX
+		return new Color(0x333333);
+	}
+	
+	public Color getTileColor()
+	{
+		// XXX
+		return new Color(245, 245, 245);
 	}
 }

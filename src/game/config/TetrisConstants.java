@@ -1,11 +1,15 @@
 package game.config;
 
-import java.awt.Color;
 import java.awt.Font;
 
+/**
+ * 不包括配色
+ * 
+ * 配色由 ColorScheme 单独管理
+ */
 public interface TetrisConstants {
 	
-	int TILE_SIZE = 25;
+	int TILE_SIZE = 23;
 	/**
 	 * 下一个方块预览图的瓦片大小
 	 */
@@ -25,13 +29,6 @@ public interface TetrisConstants {
 	int MASK_ROW_FULL  = ((1 << SPACE_WIDTH) -1) << WALL_WIDTH;
 
 	int INIT_SPACE_ROW = ~ MASK_ROW_FULL;
-	
-	// 配色
-	Color COLOR_SPACE = new Color(30, 30, 30);
-	Color COLOR_EDEN  = new Color(55, 30, 30, 220);
-	Color COLOR_TILE   = new Color(245, 245, 245);
-	Color COLOR_SHADOW = new Color(255, 255, 255, 30);
-	Color COLOR_SIDE_BG = new Color(0x333333);
 	
 	int MAX_SHAPE_SIZE = 4;
 	
