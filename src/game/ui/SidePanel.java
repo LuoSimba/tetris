@@ -75,8 +75,7 @@ public class SidePanel extends JPanel {
 		
 		Shape shape = app.currentShape();
 		
-		
-		g2.setColor(Color.RED);
+		g2.setColor(cs.getTextColor());
 		g2.setFont(TetrisConstants.FONT);
 		g2.drawString("x=" + shape.getX(), 10, 50);
 		g2.drawString("y=" + shape.getY() + ", " + shape.getImageY(), 10, 70);

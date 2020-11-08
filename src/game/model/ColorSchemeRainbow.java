@@ -74,4 +74,10 @@ final class ColorSchemeRainbow extends ColorScheme {
 	public Color getShapeColor() {
 		return list.get(index);
 	}
+
+
+	@Override
+	public Color getTextColor() {
+		return Color.RED;
+	}
 }

@@ -2,6 +2,7 @@ package game.model;
 
 import java.awt.Color;
 
+
 /**
  * 管理方块的配色
  * 
@@ -16,7 +17,7 @@ public abstract class ColorScheme {
 	public static ColorScheme getDefaultColorScheme()
 	{
 		if (defaultCs == null)
-			defaultCs = new ColorSchemeRainbow();
+			defaultCs = new ColorSchemeClassical();
 		
 		return defaultCs;
 	}
@@ -35,4 +36,6 @@ public abstract class ColorScheme {
 	abstract public Color getEdenColor();
 	abstract public Color getSideBackgroundColor();
 	abstract public Color getTileColor();
+	
+	abstract public Color getTextColor();
 }
