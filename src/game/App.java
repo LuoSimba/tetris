@@ -14,7 +14,7 @@ import game.model.Level;
 import game.model.MusicEvent;
 import game.model.Page;
 import game.model.Brick;
-import game.model.ShapeFactory;
+import game.model.BrickFactory;
 import game.model.Space;
 import game.model.Status;
 import game.model.Task;
@@ -98,7 +98,7 @@ public class App extends Thread {
 	
 	private GameView    view;
 	private Space       space;
-	private ShapeFactory factory;
+	private BrickFactory factory;
 	private Brick       shape;
 	private Brick       nextShape;
 	private Page        shapePic;
@@ -155,7 +155,7 @@ public class App extends Thread {
 		status = Status.READY;
 		
 		space       = new Space();
-		factory     = new ShapeFactory();
+		factory     = new BrickFactory();
 		queue       = new EventQueue();
 		task2       = new HeartBeat();
 		levelMgr    = new Level(task2);

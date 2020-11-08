@@ -16,7 +16,7 @@ import java.util.LinkedList;
  * 
  * 本类内部决定方块的生成顺序
  */
-public class ShapeFactory {
+public class BrickFactory {
 	
 	/**
 	 * 枚举所有的形状
@@ -34,7 +34,7 @@ public class ShapeFactory {
 	
 	private Skin skin;
 	
-	public ShapeFactory()
+	public BrickFactory()
 	{
 		skin = Skin.getDefaultSkin();
 		
