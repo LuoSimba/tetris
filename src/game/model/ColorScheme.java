@@ -1,7 +1,5 @@
 package game.model;
 
-import game.config.TetrisConstants;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +11,14 @@ import java.util.List;
  * 
  * 同时管理界面的配色（方块与界面应该是统一的）
  */
-public class ColorScheme {
+public abstract class ColorScheme {
 	
 	private static ColorScheme defaultCs;
 	
 	public static ColorScheme getDefaultColorScheme()
 	{
 		if (defaultCs == null)
-			defaultCs = new ColorScheme();
+			defaultCs = new ColorSchemeRainbow();
 		
 		return defaultCs;
 	}
@@ -30,7 +28,7 @@ public class ColorScheme {
 	private int index;
 	private int size;
 	
-	public ColorScheme()
+	protected ColorScheme()
 	{
 		list  = new ArrayList<Color>();
 	

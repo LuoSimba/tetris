@@ -36,7 +36,7 @@ public class ShapeFactory {
 	
 	public ShapeFactory()
 	{
-		cs = new ColorScheme();
+		cs = ColorScheme.getDefaultColorScheme();
 		
 		queue = new LinkedList<Shape>();
 	}
