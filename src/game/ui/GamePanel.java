@@ -5,32 +5,26 @@ import game.config.TetrisConstants;
 import game.model.Skin;
 import game.model.Shape;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
-	private final Dimension size;
-
 	public GamePanel()
 	{
 		int unit        = TetrisConstants.TILE_SIZE;
-		int widthPixel  = TetrisConstants.SPACE_WIDTH * unit;
-		int heightPixel = TetrisConstants.SPACE_HEIGHT_EX * unit;
-		
-		size = new Dimension(widthPixel, heightPixel);
-	}
-	
-	@Override
-	public Dimension getPreferredSize()
-	{
-		return size;
+		int widthPixel  = TetrisConstants.SPACE_WIDTH * unit + 12;
+		int heightPixel = TetrisConstants.SPACE_HEIGHT_EX * unit + 12;
+
+		this.setPreferredSize(new Dimension(widthPixel, heightPixel));
 	}
 	
 	private GameView getView()
@@ -68,11 +62,21 @@ public class GamePanel extends JPanel {
 		//g2.translate(0, 0);
 		
 		// 绘制背景
+		g2.setColor(cs.getSpaceColor());
+		g2.fillRect(0, 0, this.getWidth(), this.getHeight());
+
+		g2.translate(3, 3);
+		// 绘制边框
+		g2.setColor(cs.getBorderColor());
+		Stroke pen = new BasicStroke(2F);
+		g2.setStroke(pen);
+		g2.drawRect(0, 0, this.getWidth() - 6, this.getHeight() - 6);
+
+		// 绘制主体
+		g2.translate(3, 3);
 		int boxWidth  = TetrisConstants.SPACE_WIDTH;
 		int boxHeight = TetrisConstants.SPACE_HEIGHT_EX;
 		int edenHeight = boxHeight - TetrisConstants.SPACE_HEIGHT;
-		g2.setColor(cs.getSpaceColor());
-		g2.fillRect(0, 0, boxWidth * unit, boxHeight * unit);
 
 		if (app == null)
 			return;

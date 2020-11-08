@@ -42,12 +42,17 @@ public class ColorSchemeClassical extends Skin {
 	}
 
 	@Override
-	public void shift() {
+	public void shiftColor() {
 		// do nothing
 	}
 
 	@Override
 	public Color getTextColor() {
+		return black;
+	}
+
+	@Override
+	public Color getBorderColor() {
 		return black;
 	}
 }

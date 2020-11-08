@@ -27,7 +27,7 @@ public abstract class Skin {
 	}
 	
 	
-	abstract public void shift();
+	abstract public void shiftColor();
 	abstract public Color getShapeColor();
 	
 	abstract public Color getShadowColor();
@@ -37,4 +37,5 @@ public abstract class Skin {
 	abstract public Color getTileColor();
 	
 	abstract public Color getTextColor();
+	abstract public Color getBorderColor();
 }

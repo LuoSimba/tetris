@@ -62,7 +62,7 @@ final class ColorSchemeRainbow extends Skin {
 
 
 	@Override
-	public void shift() {
+	public void shiftColor() {
 		index ++;
 		
 		if (index >= SIZE)
@@ -78,6 +78,13 @@ final class ColorSchemeRainbow extends Skin {
 
 	@Override
 	public Color getTextColor() {
+		return Color.RED;
+	}
+
+
+	@Override
+	public Color getBorderColor() {
+		// XXX 
 		return Color.RED;
 	}
 }

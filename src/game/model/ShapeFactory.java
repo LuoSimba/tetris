@@ -32,11 +32,11 @@ public class ShapeFactory {
 	 */
 	private LinkedList<Shape> queue;
 	
-	private Skin cs;
+	private Skin skin;
 	
 	public ShapeFactory()
 	{
-		cs = Skin.getDefaultSkin();
+		skin = Skin.getDefaultSkin();
 		
 		queue = new LinkedList<Shape>();
 	}
@@ -105,7 +105,7 @@ public class ShapeFactory {
 		{
 			char type = templete.charAt(i);
 			
-			Color fg = cs.getShapeColor();
+			Color fg = skin.getShapeColor();
 			
 			Shape shape = create(type);
 			
@@ -117,7 +117,7 @@ public class ShapeFactory {
 			
 			queue.add(shape);
 			
-			cs.shift();
+			skin.shiftColor();
 		}
 	}
 	
