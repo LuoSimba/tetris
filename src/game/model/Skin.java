@@ -4,26 +4,25 @@ import java.awt.Color;
 
 
 /**
- * 管理方块的配色
- * 
- * 应当只在 ShapeFactory 创建方块时使用。
- * 
- * 同时管理界面的配色（方块与界面应该是统一的）
+ * 同时管理界面与方块的配色，外观（方块与界面应该是统一的）
  */
-public abstract class ColorScheme {
+public abstract class Skin {
 	
-	private static ColorScheme defaultCs;
+	private static Skin defaultSkin;
 	
-	public static ColorScheme getDefaultColorScheme()
+	/**
+	 * 获取全局默认的皮肤
+	 */
+	public static Skin getDefaultSkin()
 	{
-		if (defaultCs == null)
-			defaultCs = new ColorSchemeClassical();
+		if (defaultSkin == null)
+			defaultSkin = new ColorSchemeClassical();
 		
-		return defaultCs;
+		return defaultSkin;
 	}
 	
 	
-	protected ColorScheme()
+	protected Skin()
 	{
 	}
 	

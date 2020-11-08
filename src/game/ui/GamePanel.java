@@ -2,7 +2,7 @@ package game.ui;
 
 import game.App;
 import game.config.TetrisConstants;
-import game.model.ColorScheme;
+import game.model.Skin;
 import game.model.Shape;
 
 import java.awt.Color;
@@ -51,7 +51,7 @@ public class GamePanel extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g) {
 		
-		final ColorScheme cs = ColorScheme.getDefaultColorScheme();
+		final Skin cs = Skin.getDefaultSkin();
 		
 		int unit = TetrisConstants.TILE_SIZE;
 		

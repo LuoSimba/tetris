@@ -5,7 +5,7 @@ import java.awt.Color;
 /**
  * 配色方案：经典
  */
-public class ColorSchemeClassical extends ColorScheme {
+public class ColorSchemeClassical extends Skin {
 	
 	private final Color black = new Color(0x060307);
 	private final Color blackShadow = new Color(0x06, 0x03, 0x07, 0x19);

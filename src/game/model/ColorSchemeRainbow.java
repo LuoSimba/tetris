@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * ÅäÉ«·½°¸£º²Êºç
  */
-final class ColorSchemeRainbow extends ColorScheme {
+final class ColorSchemeRainbow extends Skin {
 
 	final private Color eden = new Color(55, 30, 30, 220);
 	final private Color space = new Color(30, 30, 30);

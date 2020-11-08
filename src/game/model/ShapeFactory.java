@@ -32,11 +32,11 @@ public class ShapeFactory {
 	 */
 	private LinkedList<Shape> queue;
 	
-	private ColorScheme cs;
+	private Skin cs;
 	
 	public ShapeFactory()
 	{
-		cs = ColorScheme.getDefaultColorScheme();
+		cs = Skin.getDefaultSkin();
 		
 		queue = new LinkedList<Shape>();
 	}
