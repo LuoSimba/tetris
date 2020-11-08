@@ -3,7 +3,7 @@ package game.ui;
 import game.App;
 import game.config.TetrisConstants;
 import game.model.Skin;
-import game.model.Shape;
+import game.model.Brick;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -73,7 +73,7 @@ public class SidePanel extends JPanel {
 			return;
 		
 		
-		Shape shape = app.currentShape();
+		Brick shape = app.currentShape();
 		
 		g2.setColor(cs.getTextColor());
 		g2.setFont(TetrisConstants.FONT);

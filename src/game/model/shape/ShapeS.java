@@ -1,8 +1,8 @@
 package game.model.shape;
 
-import game.model.Shape;
+import game.model.Brick;
 
-public class ShapeS extends Shape {
+public class ShapeS extends Brick {
 	
 	
 	private final static String[] maps = {

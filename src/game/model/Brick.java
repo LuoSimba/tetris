@@ -25,7 +25,7 @@ import game.config.TetrisConstants;
  * 方块默认为白色，创建之后可以修改
  * 镜像的颜色是固定不变的。
  */
-public abstract class Shape {
+public abstract class Brick {
 	
 	private int x;
 	private int y;
@@ -34,7 +34,7 @@ public abstract class Shape {
 	protected int shapeIndex;
 	private Color fg;
 	
-	protected Shape()
+	protected Brick()
 	{
 		int mapSize = getMapSize();
 		

@@ -14,6 +14,7 @@ final class ColorSchemeRainbow extends Skin {
 	final private Color sideBg = new Color(0x333333);
 	final private Color tile = new Color(245, 245, 245);
 	final private Color shadow = new Color(255, 255, 255, 30);
+	final private Color border = new Color(0,0,0,0);
 	
 	private List<Color> list;
 	private int index;
@@ -84,7 +85,6 @@ final class ColorSchemeRainbow extends Skin {
 
 	@Override
 	public Color getBorderColor() {
-		// XXX 
-		return Color.RED;
+		return border;
 	}
 }

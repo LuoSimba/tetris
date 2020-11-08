@@ -15,8 +15,10 @@ public abstract class Skin {
 	 */
 	public static Skin getDefaultSkin()
 	{
-		if (defaultSkin == null)
+		if (defaultSkin == null) {
 			defaultSkin = new ColorSchemeClassical();
+			//defaultSkin = new ColorSchemeRainbow();
+		}
 		
 		return defaultSkin;
 	}

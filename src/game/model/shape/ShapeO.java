@@ -1,11 +1,11 @@
 package game.model.shape;
 
-import game.model.Shape;
+import game.model.Brick;
 
 /**
  * Ìï×Ö·½¿é
  */
-public class ShapeO extends Shape {
+public class ShapeO extends Brick {
 	
 	private final static String[] maps = {
 		  "0000"

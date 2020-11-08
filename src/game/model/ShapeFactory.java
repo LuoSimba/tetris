@@ -30,7 +30,7 @@ public class ShapeFactory {
 	 * 
 	 * 如果队列为空，会自动填充足够的新的方块
 	 */
-	private LinkedList<Shape> queue;
+	private LinkedList<Brick> queue;
 	
 	private Skin skin;
 	
@@ -38,10 +38,10 @@ public class ShapeFactory {
 	{
 		skin = Skin.getDefaultSkin();
 		
-		queue = new LinkedList<Shape>();
+		queue = new LinkedList<Brick>();
 	}
 	
-	private Shape create(char type)
+	private Brick create(char type)
 	{
 		switch (type)
 		{
@@ -73,7 +73,7 @@ public class ShapeFactory {
 	 * 
 	 * 因为旋转不一定会成功，这样方便回滚
 	 */
-	public Shape rotate(Shape old)
+	public Brick rotate(Brick old)
 	{
 		char type = old.getType();
 		Color fg = old.getColor();
@@ -81,7 +81,7 @@ public class ShapeFactory {
 		int x = old.getX();
 		int y = old.getY();
 		
-		Shape shape = create(type);
+		Brick shape = create(type);
 		shape.shapeIndex = index;
 		shape.setPos(x, y);
 		shape.setColor(fg);
@@ -107,7 +107,7 @@ public class ShapeFactory {
 			
 			Color fg = skin.getShapeColor();
 			
-			Shape shape = create(type);
+			Brick shape = create(type);
 			
 			shape.shapeIndex = 0;
 			
@@ -144,7 +144,7 @@ public class ShapeFactory {
 	/**
 	 * 获取下一个方块
 	 */
-	synchronized public Shape genNext()
+	synchronized public Brick genNext()
 	{
 		if (queue.size() == 0)
 		{

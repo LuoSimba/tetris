@@ -3,7 +3,7 @@ package game.ui;
 import game.App;
 import game.config.TetrisConstants;
 import game.model.Skin;
-import game.model.Shape;
+import game.model.Brick;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -84,7 +84,7 @@ public class GamePanel extends JPanel {
 		
 		
 		
-		Shape shape = app.currentShape();
+		Brick shape = app.currentShape();
 		
 		int ci = boxHeight - 1;
 		

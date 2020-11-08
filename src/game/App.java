@@ -13,7 +13,7 @@ import game.model.GameListener;
 import game.model.Level;
 import game.model.MusicEvent;
 import game.model.Page;
-import game.model.Shape;
+import game.model.Brick;
 import game.model.ShapeFactory;
 import game.model.Space;
 import game.model.Status;
@@ -99,8 +99,8 @@ public class App extends Thread {
 	private GameView    view;
 	private Space       space;
 	private ShapeFactory factory;
-	private Shape       shape;
-	private Shape       nextShape;
+	private Brick       shape;
+	private Brick       nextShape;
 	private Page        shapePic;
 	private Page        shapePicImg;
 	private Page        nextShapePic;
@@ -319,7 +319,8 @@ public class App extends Thread {
 		refreshUI();
 	}
 	
-	synchronized public Shape currentShape()
+	// XXX
+	synchronized public Brick currentShape()
 	{
 		return shape;
 	}
@@ -437,7 +438,7 @@ public class App extends Thread {
 	
 	private void rotateShape()
 	{
-		Shape nextShape = factory.rotate(shape);
+		Brick nextShape = factory.rotate(shape);
 		
 		if (space.isConflict(nextShape))
 		{

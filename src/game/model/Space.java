@@ -76,20 +76,20 @@ public class Space {
 		return image;
 	}
 	
-	public boolean isConflictImage(Shape shape)
+	public boolean isConflictImage(Brick brick)
 	{
-		return isConflict(shape, true);
+		return isConflict(brick, true);
 	}
 	
-	public boolean isConflict(Shape shape)
+	public boolean isConflict(Brick brick)
 	{
-		return isConflict(shape, false);
+		return isConflict(brick, false);
 	}
 	
 	/**
 	 * 是否碰撞
 	 */
-	private boolean isConflict(Shape shape, boolean bUseImage)
+	private boolean isConflict(Brick shape, boolean bUseImage)
 	{
 		int[] raster = shape.getData();
 		int begin    = bUseImage ? shape.getImageY() : shape.getY();
@@ -122,7 +122,7 @@ public class Space {
 	 * 方块合并，因为方块的图片已经有现成的，所以
 	 * 直接传入而不重新生成
 	 */
-	public void mergeShape(Shape shape, Page shapePic)
+	public void mergeShape(Brick shape, Page shapePic)
 	{
 		int unit = TetrisConstants.TILE_SIZE;
 		int[] raster = shape.getData();
