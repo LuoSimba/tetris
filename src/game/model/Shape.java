@@ -263,7 +263,7 @@ public abstract class Shape {
 	public void paintImage(Graphics2D g)
 	{
 		// XXX
-		paint(g, TetrisConstants.TILE_SIZE, ColorScheme.getDefaultColorScheme().getImgColor());
+		paint(g, TetrisConstants.TILE_SIZE, ColorScheme.getDefaultColorScheme().getShadowColor());
 	}
 	
 	public void paintPre(Graphics2D g)

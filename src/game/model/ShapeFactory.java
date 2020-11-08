@@ -105,7 +105,7 @@ public class ShapeFactory {
 		{
 			char type = templete.charAt(i);
 			
-			Color fg = cs.getColor();
+			Color fg = cs.getShapeColor();
 			
 			Shape shape = create(type);
 			
@@ -116,7 +116,8 @@ public class ShapeFactory {
 			shape.setColor(fg);
 			
 			queue.add(shape);
-			cs.next();
+			
+			cs.shift();
 		}
 	}
 	
