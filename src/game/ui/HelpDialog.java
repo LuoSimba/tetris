@@ -34,7 +34,11 @@ public class HelpDialog extends JDialog {
 		
 		
 		JTextArea text = new JTextArea();
+		
+		// 设置透明模式
+		// opaque <-> transparent
 		text.setOpaque(false);
+		
 		text.setLineWrap(true);
 		text.setEditable(false);
 		text.setFont(TetrisConstants.FONT);
