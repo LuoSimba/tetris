@@ -26,8 +26,19 @@
 * 让我们荡起双桨
 * 小步舞曲 （游戏结束用）
 
+## Build
+
+### Use Java IDEs
+e.g. MyEclipse
+### Use Maven
+* install maven
+* cd project's root directroy
+* call 'maven compile'
+* run with 'cd bin & java game.Boot'
+
 ## ChangeLog
 
+* 2022-11-18 Add maven support. 使用 maven 编译项目
 * 1108 支持配色方案; 增加经典配色
 * 1105 关卡
 * 1103 不再支持双人游戏
@@ -48,7 +59,6 @@
 
 * 旋转碰撞检测仍有问题
 * 没有完善游戏规则说明
-* 没有构建说明
 * 代码缺少注释和文档说明
 * 游戏结束可能没有完全清理
 
