@@ -77,6 +77,24 @@ implements MouseMotionListener, WindowListener {
 			case KeyEvent.VK_P:
 				view1.putCommand(Command.PAUSE);
 				break;
+			case KeyEvent.VK_Q:
+				Window.this.dispose();
+				break;
+			case KeyEvent.VK_F1:
+				new HelpDialog(Window.this);
+				break;
+			case KeyEvent.VK_M:
+				if (Window.this.bBGM)
+				{
+					Window.this.bBGM = false;
+					RealPlayer.close();
+				}
+				else
+				{
+					Window.this.bBGM = true;
+					RealPlayer.open();
+				}
+				break;
 				
 			default:
 				break;
@@ -121,6 +139,10 @@ implements MouseMotionListener, WindowListener {
 	final private MenuBar menu;
 	final private JPanel content;
 	private GameView view1;
+	/**
+	 * ±≥æ∞“Ù¿÷
+	 */
+	private boolean bBGM = false;
 	
 	private Window()
 	{
@@ -137,7 +159,7 @@ implements MouseMotionListener, WindowListener {
 		isCursorShow = true;
 		
 		// set up the menu bar.
-		menu = new MenuBar(this);
+		menu = new MenuBar();
 		this.setJMenuBar(menu);
 		
 		content = (JPanel) this.getContentPane();
@@ -156,6 +178,8 @@ implements MouseMotionListener, WindowListener {
 		this.addMouseMotionListener(this);
 		this.addWindowListener(this);
 		this.setVisible(true);
+		
+		System.out.println("Press F1 for help ...");
 	}
 	
 	

@@ -1,14 +1,9 @@
 package game.ui;
 
-import game.sound.RealPlayer;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 
 /**
  * Ö÷²Ëµ¥
@@ -26,59 +21,15 @@ public class MenuBar extends JMenuBar {
 		public void actionPerformed(ActionEvent e) {
 			String cmd = e.getActionCommand();
 			Object src = e.getSource();
-
-			if (cmd == "±³¾°ÒôÀÖ")
-			{
-				JCheckBoxMenuItem item = (JCheckBoxMenuItem) src;
-				
-				if (item.isSelected())
-				{
-					RealPlayer.open();
-				}
-				else
-				{
-					RealPlayer.close();
-				}
-			}
-			else if (cmd == "°ïÖú")
-			{
-				new HelpDialog(win);
-			}
-			else if (cmd == "ÍË³ö")
-			{
-				win.dispose();
-			}
-			else
-			{
-				System.out.println("²Ëµ¥ÃüÁî£º" + cmd);
-			}
 		}
 	}
 	
 	private static final long serialVersionUID = 1L;
 	
-	private Window win;
-	
 	private ActionListener listener;
 
-	public MenuBar(Window win)
+	public MenuBar()
 	{
-		this.win = win;
 		this.listener = new MenuProc();
-		
-		JMenu menu = new JMenu("ÎÄ¼ş");
-		
-		add0(menu, new JCheckBoxMenuItem("±³¾°ÒôÀÖ"), listener);
-		add0(menu, new JMenuItem("°ïÖú"), listener);
-		menu.addSeparator();
-		add0(menu, new JMenuItem("ÍË³ö"), listener);
-		
-		this.add(menu);
-	}
-	
-	private void add0(JMenu menu, JMenuItem item, ActionListener al)
-	{
-		item.addActionListener(al);
-		menu.add(item);
 	}
 }
