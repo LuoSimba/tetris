@@ -24,10 +24,6 @@ implements GameListener, ActionListener {
 	 */
 	final private JMenuItem itemNewGame;
 	/**
-	 * 暂停游戏
-	 */
-	final private JCheckBoxMenuItem itemPauseGame;
-	/**
 	 * 结束游戏
 	 */
 	final private JMenuItem itemDispose;
@@ -41,51 +37,37 @@ implements GameListener, ActionListener {
 		this.view = view;
 		
 		itemNewGame   = new JMenuItem("新游戏");
-		itemPauseGame = new JCheckBoxMenuItem("暂停");
 		itemDispose   = new JMenuItem("结束游戏");
 		
-		itemPauseGame.setEnabled(false);
 		itemDispose.setEnabled(false);
 		
 		itemNewGame.addActionListener(this);
-		itemPauseGame.addActionListener(this);
 		itemDispose.addActionListener(this);
 		
 		this.add(itemNewGame);
-		this.add(itemPauseGame);
 		this.add(itemDispose);
 	}
 
 	@Override
 	public void onDispose() {
-		itemPauseGame.setSelected(false);
-		itemPauseGame.setEnabled(false);
 		
 		itemDispose.setEnabled(false);
 	}
 
 	@Override
 	public void onGameOver() {
-		itemPauseGame.setSelected(false);
-		itemPauseGame.setEnabled(false);
 	}
 
 	@Override
 	public void onGamePause() {
-		itemPauseGame.setSelected(true);
 	}
 
 	@Override
 	public void onGameResume() {
-		itemPauseGame.setSelected(false);
 	}
 
 	@Override
 	public void onGameStart() {
-		
-		itemPauseGame.setSelected(false);
-		//itemPauseGame.isSelected();
-		itemPauseGame.setEnabled(true);
 		
 		itemDispose.setEnabled(true);
 	}
@@ -101,10 +83,6 @@ implements GameListener, ActionListener {
 			app.addGameListener(this);
 			// 立即开始游戏
 			app.start();
-		}
-		else if (command == "暂停")
-		{
-			view.putCommand(Command.PAUSE);
 		}
 		else if (command == "结束游戏")
 		{

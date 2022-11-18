@@ -15,6 +15,7 @@ import java.awt.event.WindowListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
@@ -136,7 +137,7 @@ implements MouseMotionListener, WindowListener {
 	/**
 	 * 窗口上的菜单栏
 	 */
-	final private MenuBar menu;
+	final private JMenuBar menu;
 	final private JPanel content;
 	private GameView view1;
 	/**
@@ -159,7 +160,7 @@ implements MouseMotionListener, WindowListener {
 		isCursorShow = true;
 		
 		// set up the menu bar.
-		menu = new MenuBar();
+		menu = new JMenuBar();
 		this.setJMenuBar(menu);
 		
 		content = (JPanel) this.getContentPane();
