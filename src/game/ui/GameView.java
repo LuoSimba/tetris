@@ -20,7 +20,6 @@ public class GameView extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	
-	private GameControlMenu menu;
 	private App app;
 
 	
@@ -28,7 +27,6 @@ public class GameView extends JPanel {
 	{
 		this.setName(name);
 		
-		menu = new GameControlMenu(this);
 		app = null;
 		
 		this.setLayout(new BorderLayout());
@@ -36,11 +34,6 @@ public class GameView extends JPanel {
 		this.add(new GamePanel());
 		
 		this.add(new SidePanel(), BorderLayout.EAST);
-	}
-	
-	public GameControlMenu getMenu()
-	{
-		return menu;
 	}
 	
 	/**
