@@ -53,6 +53,7 @@ public class GamePanel extends JPanel {
 		if (view == null)
 			return;
 		
+		
 		App app = view.getApp();
 		
 		Graphics2D g2 = (Graphics2D) g;
@@ -78,8 +79,11 @@ public class GamePanel extends JPanel {
 		int boxHeight = TetrisConstants.SPACE_HEIGHT_EX;
 		int edenHeight = boxHeight - TetrisConstants.SPACE_HEIGHT;
 
-		if (app == null)
+		if (app == null) {
+			g2.setColor(Color.GREEN);
+			g2.drawString("press N to start", 80, 100);
 			return;
+		}
 		
 		
 		
