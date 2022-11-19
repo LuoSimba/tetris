@@ -1,6 +1,7 @@
 package game.ui;
 
 
+import game.App;
 import game.model.Command;
 import game.model.TaskService;
 import game.sound.RealPlayer;
@@ -15,7 +16,6 @@ import java.awt.event.WindowListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
@@ -85,17 +85,26 @@ implements MouseMotionListener, WindowListener {
 				new HelpDialog(Window.this);
 				break;
 			case KeyEvent.VK_M:
-				if (Window.this.bBGM)
+				if (bBGM)
 				{
-					Window.this.bBGM = false;
+					bBGM = false;
 					RealPlayer.close();
+					view_status.musicOff();
 				}
 				else
 				{
-					Window.this.bBGM = true;
+					bBGM = true;
 					RealPlayer.open();
+					view_status.musicOn();
 				}
 				break;
+			case KeyEvent.VK_N:
+				App app = view1.createNewGame();
+				app.start();
+				break;
+			case KeyEvent.VK_E:
+				view1.killGame();
+				view1.repaint();
 				
 			default:
 				break;
@@ -134,12 +143,9 @@ implements MouseMotionListener, WindowListener {
 	}
 	
 	private boolean isCursorShow;
-	/**
-	 * 窗口上的菜单栏
-	 */
-	final private JMenuBar menu;
 	final private JPanel content;
 	private GameView view1;
+	private StatusView view_status;
 	/**
 	 * 背景音乐
 	 */
@@ -159,18 +165,14 @@ implements MouseMotionListener, WindowListener {
 		
 		isCursorShow = true;
 		
-		// set up the menu bar.
-		menu = new JMenuBar();
-		this.setJMenuBar(menu);
-		
 		content = (JPanel) this.getContentPane();
 		content.setLayout(new BoxLayout(content, BoxLayout.X_AXIS));
 		
 		view1 = new GameView("游戏");
-		
-		menu.add(view1.getMenu());
+		view_status = new StatusView();
 		
 		this.add(view1);
+		this.add(view_status);
 		this.pack();
 		// 使窗体居中
 		this.setLocationRelativeTo(null);
@@ -179,8 +181,6 @@ implements MouseMotionListener, WindowListener {
 		this.addMouseMotionListener(this);
 		this.addWindowListener(this);
 		this.setVisible(true);
-		
-		System.out.println("Press F1 for help ...");
 	}
 	
 	
