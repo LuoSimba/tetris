@@ -85,24 +85,24 @@ implements MouseMotionListener, WindowListener {
 				new HelpDialog(Window.this);
 				break;
 			case KeyEvent.VK_M:
-				if (Window.this.bBGM)
+				if (bBGM)
 				{
-					Window.this.bBGM = false;
+					bBGM = false;
 					RealPlayer.close();
 				}
 				else
 				{
-					Window.this.bBGM = true;
+					bBGM = true;
 					RealPlayer.open();
 				}
 				break;
 			case KeyEvent.VK_N:
-				App app = Window.this.view1.createNewGame();
+				App app = view1.createNewGame();
 				app.start();
 				break;
 			case KeyEvent.VK_E:
-				Window.this.view1.killGame();
-				Window.this.view1.repaint();
+				view1.killGame();
+				view1.repaint();
 				
 			default:
 				break;
@@ -143,6 +143,7 @@ implements MouseMotionListener, WindowListener {
 	private boolean isCursorShow;
 	final private JPanel content;
 	private GameView view1;
+	private StatusView view_status;
 	/**
 	 * ±≥æ∞“Ù¿÷
 	 */
@@ -166,8 +167,10 @@ implements MouseMotionListener, WindowListener {
 		content.setLayout(new BoxLayout(content, BoxLayout.X_AXIS));
 		
 		view1 = new GameView("”Œœ∑");
+		view_status = new StatusView();
 		
 		this.add(view1);
+		this.add(view_status);
 		this.pack();
 		//  π¥∞ÃÂæ”÷–
 		this.setLocationRelativeTo(null);
