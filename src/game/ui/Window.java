@@ -181,8 +181,6 @@ implements MouseMotionListener, WindowListener {
 		this.addMouseMotionListener(this);
 		this.addWindowListener(this);
 		this.setVisible(true);
-		
-		System.out.println("Press F1 for help ...");
 	}
 	
 	

@@ -20,7 +20,10 @@ public class StatusView extends JPanel {
 	
 	private boolean bBGM = false;
 	private Image icoBGM = null;
+	private Image icoHelp = null;
+	
 	private URL urlBGM = null;
+	private URL urlHelp = null;
 	
 	private Color colorGray = new Color(80, 80, 80);
 	private Color colorHi   = new Color(255, 80, 80);
@@ -33,8 +36,11 @@ public class StatusView extends JPanel {
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		
 		// ±≥æ∞“Ù¿÷Õº±Í
-		urlBGM = StatusView.class.getResource("/res/image/ico-bgm.png");
-		icoBGM = tk.getImage(urlBGM);
+		urlBGM  = StatusView.class.getResource("/res/image/ico-bgm.png");
+		urlHelp = StatusView.class.getResource("/res/image/ico-help.png");
+		
+		icoBGM  = tk.getImage(urlBGM);
+		icoHelp = tk.getImage(urlHelp);
 	}
 	
 	public void musicOn() {
@@ -56,9 +62,14 @@ public class StatusView extends JPanel {
 		
 		g2.setColor(bBGM ? colorHi : colorGray);
 		g2.fillRect(0, 0, 32, 32);
-		g2.drawImage(icoBGM, 0, 0, null);
+		
+		g2.drawImage(icoBGM,  0,  0, null);
+		g2.drawImage(icoHelp, 0, 32, null);
+		
 		g2.setColor(colorText);
-		g2.drawString("M", 0, 32);
+		g2.drawString("M",  0, 32);
+		g2.drawString("F1", 0, 64);
+		
 	}
 
 }
