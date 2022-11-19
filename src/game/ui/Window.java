@@ -89,11 +89,13 @@ implements MouseMotionListener, WindowListener {
 				{
 					bBGM = false;
 					RealPlayer.close();
+					view_status.musicOff();
 				}
 				else
 				{
 					bBGM = true;
 					RealPlayer.open();
+					view_status.musicOn();
 				}
 				break;
 			case KeyEvent.VK_N:
